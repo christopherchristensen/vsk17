@@ -16,13 +16,13 @@
 
 
 ### 2: Critical: critical conditions
-* Network connection list
+* Network connection lost
 
 ### 3: Error: error conditions
 * Game crashed
 
 ### 4: Warning: warning conditions
-
+* Network connection slow
 
 ### 5: Notice: normal but significant condition
 * every information of a wrong click to the user
