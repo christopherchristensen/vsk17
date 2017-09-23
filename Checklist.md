@@ -1,7 +1,6 @@
-Die gekürzte Version der vorgegebenen Muss-Features
+# Checkliste
 
-Muss-Features Checkliste
-
+## Zwischenabgabe
 1. Als Komponente realisiert
 2. Message-Level mitgeben mit Level-Filter
 3. Zwei Interfaces: 
@@ -14,8 +13,7 @@ Muss-Features Checkliste
 8. Schnittstelle StringPersistor für Schreiben des Textfiles (StringPersistorFile)
 9. Adapter (GoF-Pattern) um Daten in Payload Parameter der StringPersistor übergeben zu können
 
-Schlussabgabe Checkliste
-
+## Schlussabgabe
 10. Qualitätsmerkmale StringPersistor erreicht
 11. Speicherformat Textfile leicht anpassbar
 12. Statische Konfigurationsdaten definiert und anpassbar
