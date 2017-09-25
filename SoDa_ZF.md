@@ -1,4 +1,4 @@
-#SoDa Summary
+# SoDa Summary
 Dieses Dokument fasst alles wichtige von SoDa zusammen.
 ## Artefakte
 Hier sind alle Artefakte, welche wir führen/abgeben müssen, aufgeführt:
@@ -13,7 +13,7 @@ Hier sind alle Artefakte, welche wir führen/abgeben müssen, aufgeführt:
 * Testprotokoll: pro Testkampagne
 
 
-##Rollen
+## Rollen
 Hier sind die einzelnen Rollen mit ihren Tätigkeiten aufgelistet:
 
 * Projektleiter (Melvin):
@@ -35,7 +35,7 @@ Hier sind die einzelnen Rollen mit ihren Tätigkeiten aufgelistet:
 	* eigenverantwortlich in Sprints
 	* Software entwerfen, erstellen, testen
 
-##Phasen
+## Phasen
 Es gibt drei Phasen:
 
 1. Initialisierungsphase
@@ -44,7 +44,7 @@ Es gibt drei Phasen:
 
 Projektleiter ist für 1. und ProductOwner für 2. verantwortlich.
 
-##Kontrolle
+## Kontrolle
 Damit man erkennen kann, ob sich das Projekt vorwärts bewegt, verwendet man folgende Tools:
 
 * Sprint Planning
