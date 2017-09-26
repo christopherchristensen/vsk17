@@ -15,4 +15,6 @@ public interface LoggerSetup {
 
     int getServerMaxTimeoutInMilliseconds();
     void setServerMaxTimeoutInMillisecond(int timeout);
+
+    void loadConfigFiles();
 }
