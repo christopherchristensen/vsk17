@@ -5,10 +5,11 @@ public interface Logger {
     LogLevel DEFAULT_LOG_LEVEL = LogLevel.Debug;
     int DEFAULT_MESSAGE_AMOUNT = 20;
 
+    void start(LoggerSetup setup);
+
     void log(LogLevel level, String message);
 
     void setReportLevel(LogLevel level);
-
     LogLevel getReportLevel();
 
     LogMessageList getLatestMessagesFromServer(int amount, LogLevel minLevel) throws NoConnectionToLogServer;
