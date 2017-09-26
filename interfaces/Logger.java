@@ -12,17 +12,17 @@ public interface Logger {
     void setReportLevel(LogLevel level);
     LogLevel getReportLevel();
 
-    LogMessageList getLatestMessagesFromServer(int amount, LogLevel minLevel) throws NoConnectionToLogServer;
+    List<LogMessage> getLatestMessagesFromServer(int amount, LogLevel minLevel) throws NoConnectionToLogServer;
 
-    default LogMessageList getLatestMessagesFromServer() throws NoConnectionToLogServer {
+    default List<LogMessage> getLatestMessagesFromServer() throws NoConnectionToLogServer {
         return this.getLatestMessagesFromServer(DEFAULT_MESSAGE_AMOUNT, DEFAULT_LOG_LEVEL);
     }
 
-    default LogMessageList getLatestMessagesFromServer(int amount) throws NoConnectionToLogServer {
+    default List<LogMessage> getLatestMessagesFromServer(int amount) throws NoConnectionToLogServer {
         return this.getLatestMessagesFromServer(amount, DEFAULT_LOG_LEVEL);
     }
 
-    default LogMessageList getLatestMessagesFromServer(LogLevel minLevel) throws NoConnectionToLogServer {
+    default List<LogMessage> getLatestMessagesFromServer(LogLevel minLevel) throws NoConnectionToLogServer {
         return this.getLatestMessagesFromServer(DEFAULT_MESSAGE_AMOUNT, minLevel);
     }
 
