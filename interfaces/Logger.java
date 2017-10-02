@@ -2,27 +2,48 @@ package ch.hslu.logger;
 
 import java.util.List;
 
-public interface Logger {
+public class Logger {
+
+    /**
+     * Create a new logger
+     * @remarks Just for internal use
+     */
+    private Logger() { }
+
+    /**
+     * Create a new logger
+     */
+    public static Logger create(LoggerSetup setup) throws NoConnectionToLogServerException {
+        // TODO
+    }
 
     /**
      * Log a message
      */
-    void log(LogLevel level, String message);
+    public void log(LogLevel level, String message) {
+        // TODO
+    }
 
     /**
      * Set minimum log level which should be reported to the server
      */
-    void setReportLevel(LogLevel level);
+    public void setReportLevel(LogLevel level) {
+        // TODO
+    }
 
     /**
      * Get the minimum log level which will be reported to the server
      */
-    LogLevel getReportLevel();
+    public LogLevel getReportLevel() {
+        // TODO
+    }
 
     /**
      * Get the all log messages from the server
      * @throws NoConnectionToLogServerException
      */
-    List<LogMessage> geLogMessagesFromServer() throws NoConnectionToLogServerException;
+    public List<LogMessage> geLogMessagesFromServer() throws NoConnectionToLogServerException {
+        // TODO
+    }
 
 }
