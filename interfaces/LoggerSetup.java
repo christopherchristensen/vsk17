@@ -47,10 +47,10 @@ public interface LoggerSetup {
     /**
      * Create a logger with the configured parameters
      */
-    Logger createLogger() throw NoConnectionToLogServerException;
+    Logger createLogger() throws NoConnectionToLogServerException;
 
     /**
      * Load the logger config from the config file
      */
-    void loadFromConfigFile() throw ConfigFileNotFoundException;
+    void loadFromConfigFile() throws ConfigFileNotFoundException;
 }

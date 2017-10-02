@@ -1,5 +1,7 @@
 package ch.hslu.logger;
 
+import java.util.List;
+
 public interface Logger {
 
     /**
