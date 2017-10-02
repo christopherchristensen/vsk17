@@ -81,9 +81,7 @@ public class LoggerSetup {
     /**
      * Load the logger config from the config file
      */
-    public void loadFromConfigFile() throws ConfigFileNotFoundException {
+    public void loadFromConfigFile() throws ConfigFileNotFoundException, InvalidConfigFileFormatException {
         // TODO
     }
-
-
 }
