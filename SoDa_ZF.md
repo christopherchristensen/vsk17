@@ -1,5 +1,6 @@
-# SoDa Summary
+# SoDa Anleitung
 Dieses Dokument fasst alles wichtige von SoDa zusammen.
+
 ## Artefakte
 Hier sind alle Artefakte, welche wir führen/abgeben müssen, aufgeführt:
 
@@ -15,7 +16,7 @@ Hier sind alle Artefakte, welche wir führen/abgeben müssen, aufgeführt:
 
 ## Rollen
 Hier sind die einzelnen Rollen:
-
+§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
 * **Projektleiter**: Melvin
 * **Product Owner**: James
 * **Scrum Master**: Vali
@@ -72,7 +73,56 @@ Der Scrum Master hat viele unterstützende Rollen. Hauptsächlich ist er für fo
 * Daily Scrum
 * Sieht zur korrekten Durchführung der Sprints und hilft wo nötig
 
-## Scrum Events
+## Scrum Ablauf
 
 ### Sprint
+Ein Sprint ist ein Zeitabschnitt in einem Projekt mit dem Ziel potenziell "releasable"-Produkte zu erstellen. Ein neuer Sprint beginnt gleich nach dem Fazit des letzten Sprints.
 
+Ein Sprint besteht aus:
+
+* Sprint Planning
+* Daily Scrums
+* Development Work
+* Sprint Review
+* Sprint Retrospektive
+
+Sobald ein Sprint beginnt werden keine neuen Ziele gesetzt. Nur der Product Owner kann einen Sprint abbrechen.
+
+### Sprint Planning
+Scrum Master sorgt dafür, dass das Sprint Planning (8h) stattfindet. 
+
+Sprint Planning beantwortet **folgende Fragen**:
+
+1. Was sind die Ziele für den nächsten Sprint?
+2. Was muss gemacht werden um diese Ziele zu erreichen?
+
+**Frage 1**, Folgende Punkte werden im Sprint Planning besprochen:
+
+* DevTeam macht Prognose über Funktionalität, welche entwickelt wird
+* Product Owner definiert die Hauptziele anhand vom Product Backlog
+* DevTeam nimmt so viele Elemente aus dem Product Backlog, wie es denkt dass es erreichen kann
+
+**Frage 2**, Nachdem die Elemente aus dem Product Backlog genommen sind und das Sprint Goal definiert ist muss das DevTeam einen Plan erstellen, wie es die Ziele erreichen kann. 
+
+**Sprint Backlog = Product Backlog Element + Sprint Plan**
+
+### Daily Scrum
+15-minutige Sitzung, worin Plan für nächste Sitzung besprochen wird.
+
+* What did I do yesterday that helped the Development Team meet the Sprint Goal?
+* What will I do today to help the Development Team meet the Sprint Goal?
+* Do I see any impediment that prevents me or the Development Team from meeting the Sprint Goal?
+
+Sitzung dient dem DevTeam um den Fortschritt zu verfolgen können.
+
+### Sprint Review
+4-stündige Sitzung, welche vom Scrum Master geleitet wird. Sprint Review beinhaltet folgende Elemente:
+
+* Welche Product Backlog Item sind **done** und welche nicht
+* Was ist gut gegangen, was nicht
+* Ist/Soll-Vergleich
+* Nächsten Schritte um wertvollen Input für das Sprint Review zu generieren
+* Review Timeline, Budget, Potential Capabilities, Marketplace, etc.
+
+### Sprint Retrospective
+Das Team 
