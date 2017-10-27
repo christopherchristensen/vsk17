@@ -38,11 +38,10 @@ try {
 ```
 
 #### TCP Connection Client
-
-Der Logger beinhaltet die Funktion `log`, welche eine LogMessage an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und dies über eine TCP Verbindung zum Server zu schicken.
+Der Logger beinhaltet die Funktion `log`, welche eine LogMessage an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
 ### Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener 'LogHandler' erstellt, welcher die Meldungen asynchrin an den Adapter zum Stringpersistor weitergiebt.
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
 
 #### Adapter
 Der Adapter stellt die Schnittstelle zum Stringpersistor her.
