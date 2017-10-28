@@ -47,8 +47,7 @@ Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für j
 Der Adapter stellt die Schnittstelle zum Stringpersistor her.
 
 #### String Persistor
-TODO James
-
+Der Stringpersistor ermöglicht es dem LogHandler (via LogWriterAdapter) eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
 
 ## Testing
 TODO make conecpt?
