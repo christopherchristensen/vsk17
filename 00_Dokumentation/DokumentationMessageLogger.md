@@ -14,11 +14,7 @@ Teammitglieder:
 ## Implementation
 TODO insert uml diagrim of system and describe
 
-### Client
-#### Logger Game
-TODO Vali
-
-#### LoggerSetup & Logger
+### Einbinden des Loggers auf einem Client
 Um den Logger in einer Client-Applikation in Betrieb zu nehmen, muss dafür über die LoggerFactory ein LoggerSetup Object geholt werden. Dazu muss der Methode einen String übergeben werden, welcher ein "Fully-Qualified Class Name" ist und das LoggerSetup Interface implementiert. Über das LoggerSetup-
 Objekt können dann verschiedene Logger erstellt werden. 
 
@@ -37,17 +33,11 @@ try {
 }
 ```
 
-#### TCP Connection Client
-Der Logger beinhaltet die Funktion `log`, welche eine LogMessage an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+### Ablauf auf dem Client
+Via den oben gezeigte Beispielcode ist der Logger im Game eingebunden. Damit die Handhabung einfacher ist wurde dazu ein Singelton erstellt, welches ermöglicht von überall Hinweise zu loggen. Darin wird über die `LoggerFactory` eine spezifische Logger-Implementierung instanziert werden. Das `Logger`-Objekt bietet dann Methoden um einen `String` oder ein `Throwable` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
-### Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
-
-#### Adapter
-Der Adapter stellt die Schnittstelle zum Stringpersistor her.
-
-#### String Persistor
-Der Stringpersistor ermöglicht es dem LogHandler (via LogWriterAdapter) eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
+### Ablauf auf dem Server
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. 
 
 ## Testing
 TODO make conecpt?
