@@ -41,4 +41,4 @@ Via den oben gezeigte Beispielcode ist der Logger im Game eingebunden. Damit die
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. 
 
 ## Testing
-TODO make conecpt?
+Die Funktionalität sollte so gut wie möglich durch Unit-Test abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisch zu testen, da viel zu umfangreiche Änderungen notwendig wären, deswegen werden für die Integration ein paar manuelle Test definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt. 
