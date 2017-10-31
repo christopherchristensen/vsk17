@@ -13,7 +13,7 @@ Teammitglieder:
 ![](base-system-overview.png)
 
 ## Implementation
-TODO insert uml diagram of system and describe
+![](VSK_UML.png)
 
 ### Einbinden des Loggers auf einem Client
 Um den Logger in einer Client-Applikation in Betrieb zu nehmen, muss dafür mit der `LoggerFactory` ein `LoggerSetup`-Objekt geholt werden. Hierfür muss der Methode `getLoggerSetup` ein "Fully-Qualified Class Name" einer Klasse als String übergeben werden, die das `LoggerSetup` Interface implementiert. Über das `LoggerSetup`-Objekt können dann verschiedene Logger erstellt werden. 
