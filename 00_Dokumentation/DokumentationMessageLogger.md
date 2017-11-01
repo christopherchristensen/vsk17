@@ -54,13 +54,13 @@ Der Logger beinhaltet die Funktion `log`, welche eine LogMessage an den Server s
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
 
 #### LoggerServer
-// TODO Melvin
+// TODO Melvin, kurzer Beschreib der genauen Funktion und der Zusammenhänge (siehe LogWriterAdapter) + alle Methoden kurz erläutern.
 
 #### LoggerServerSocket
-// TODO Melvin
+// TODO Melvin, kurzer Beschreib der genauen Funktion und der Zusammenhänge (siehe LogWriterAdapter) + alle Methoden kurz erläutern.
 
 #### LogHandler
-// TODO Melvin
+// TODO Melvin, kurzer Beschreib der genauen Funktion und der Zusammenhänge (siehe LogWriterAdapter) + alle Methoden kurz erläutern.
 
 #### LogWriterAdapter
 Der LogWriterAdapter stellt die Schnittstelle vom LogHandler zum Stringpersistor her und versteht sich somit als Adapter. Der LogHandler nutzt diesen Adapter, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Im Adapter wird das File in das die LogMessages geschrieben werden definiert und in welchem Format die LogMessages gespeichert werden. Der LogWriterAdapter verfügt nur über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`.
