@@ -65,13 +65,32 @@ LogLevel | Verwendung
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
 
 #### LoggerServer
-// TODO Melvin, kurzer Beschreib der genauen Funktion und der Zusammenhänge (siehe LogWriterAdapter) + alle Methoden kurz erläutern.
+Der LoggerServer besitzt eine `main` Methode, welche für das Starten des Servers verantwortlich ist. Die Klasse bestitz ausserdem drei wichtige lokale Konstanten.
+
+* ExecutorService
+
+Dies ist ein ThreadPool, welcher für die einzelnen LogHandler abarbeitet.
+
+* LogWriterAdapter
+
+Dies ist die Referenz zum Adapter, welche einmalig erzeugt wird und jedem LogHandler zur Verwendung mitgegeben wird.
+
+* ServerSocket
+
+Der Socket ist die Anlaufstelle des Servers. TCP Packete werden damit empfangen. Der LoggerServer erstellt für jede erhaltene Nachricht einen eigenen LogHandler.
+
 
 #### LoggerServerSocket
-// TODO Melvin, kurzer Beschreib der genauen Funktion und der Zusammenhänge (siehe LogWriterAdapter) + alle Methoden kurz erläutern.
+Der LoggerServerSocket erstellt einen ServerSocket. Dafür liest er die Konfiguarionen mit der Methode `loadConfigFile()` aus dem Konfigurationsfile. Falls das File `config.properties` nicht existiert, werden standard Werte verwendet. Mit diesen Werten wird ein ServerSocket erstellt. Der Socket wird mit der statischen Methode `create()` erstellt. 
 
 #### LogHandler
-// TODO Melvin, kurzer Beschreib der genauen Funktion und der Zusammenhänge (siehe LogWriterAdapter) + alle Methoden kurz erläutern.
+Der LogHandler wird vom LoggerServer erstellt. Dieser ist für die asynchron Weitergabe an den LogWriterAdapter verantwortlich. Dementsprechend ist die impementierung auch einfach gehalten. Die Run-Methode sieht wie folgt aus:
+
+```java
+public void run() {
+	logWriterAdapter.writeLogMessage(message);
+}
+```
 
 #### LogWriterAdapter
 Der LogWriterAdapter stellt die Schnittstelle vom LogHandler zum Stringpersistor her und versteht sich somit als Adapter. Der LogHandler nutzt diesen Adapter, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Im Adapter wird das File in das die LogMessages geschrieben werden definiert und in welchem Format die LogMessages gespeichert werden. Der LogWriterAdapter verfügt nur über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`.
@@ -80,4 +99,14 @@ Der LogWriterAdapter stellt die Schnittstelle vom LogHandler zum Stringpersistor
 Der Stringpersistor ermöglicht es dem LogHandler (via LogWriterAdapter) eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
 
 ## Testing
-Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt. 
+Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
+
+### Unit Testing
+TODO describe unit test and manual tests
+
+### Manual Testing
+TODO describe unit test and manual tests
+
+#### LoggerServer
+Der LogServer wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen LogLevel an den Server. Manuell wird dann überprüft, ob die richten Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP Verbindung und dem LogMessage-Handling in der Queue
+
