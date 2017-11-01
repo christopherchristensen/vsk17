@@ -56,7 +56,7 @@ LogLevel | Verwendung
 `INFO` | Information über wichtige Ereignisse im Spiel. Jeglicher User-Input wird mit diesem Level geloggt.
 `WARN` | Warnungen, wenn etwas passiert, das so nicht geplant war. Das Spiel läuft jedoch weiterhin.
 `ERROR` | Fehler, von welchen das System sich wieder erholen kann, wie z.B. Fehler beim Laden/Speichern einer Shape.
-`Critical` | Fehler, von welchen das System sich nicht erholen kann und beendet werden muss, z.B. bei einer InterruptedException
+`CRITICAL` | Fehler, von welchen das System sich nicht erholen kann und beendet werden muss, z.B. bei einer InterruptedException
 
 #### Logger
 // TODO Luki
