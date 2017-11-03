@@ -104,11 +104,23 @@ Der Stringpersistor ermöglicht es dem LogHandler (via LogWriterAdapter) eine Ze
 Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
 
 ### Unit Testing
-TODO describe unit test and manual tests
 
-### Manual Testing
-TODO describe unit test and manual tests
+#### LoggerCommon
+Zur Verifikation der `LogMessage`-Klasse gibt es einen `LogMessageTest`, welcher das wichtigste Verhalten der Klasse überprüft. 
+
+#### LoggerComponent
+Der `BaseLogger` wird durch den `BaseLoggerTest` überprüft. Damit nicht ständig einen TCP-Socket aufgemacht werden muss verwendet der der Test die Klasse `FakeBaseLogger`, welche von `BaseLogger` abgeleitet wird. Darin wird vorallem die Methode `createSocket` überschrieben und es wird ein `FakeLoggerSocket` erstellt. Ausserdem bietet die abgeleitete Klasse noch ein paar Getters und andere Methoden zur Überprüfung der Daten. Für die Verifikation der anderen Klassen in diesem Modul werden manuelle Tests verwendet, da das Testen einer TCP-Verbindung nicht so trivial ist. 
 
 #### LoggerServer
+TODO describe unit test
+
+#### StringPersistor
+TODO describe unit test
+
+### Manual Testing
+#### GameOfLife
+TODO describe manual tests
+
+#### LoggerComponent & LoggerServer
 Der LogServer wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen LogLevel an den Server. Manuell wird dann überprüft, ob die richten Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP Verbindung und dem LogMessage-Handling in der Queue
 
