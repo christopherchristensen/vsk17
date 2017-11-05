@@ -46,8 +46,8 @@ Der Logger beinhaltet die Funktion `log`, welche eine LogMessage an den Server s
 
 #### GameOfLife Einbindung des Loggers
 Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das `Logger`-Singleton. Um den Logger in Betrieb zu nehmen, wird über die statische `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung instanziiert. 
-Dafür wird die Konfigurationsdatei `config.cfg` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Komponente austauschen.
-Zur Veranschaulichung folgt der mögliche Inhalt von `config.cfg`:
+Dafür wird die Konfigurationsdatei `config.properties` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Komponente austauschen.
+Zur Veranschaulichung folgt der mögliche Inhalt von `config.properties`:
 ```
 fqn=ch.hslu.vsk.g01.loggercomponent.LoggerFactory
 server=127.0.0.1
