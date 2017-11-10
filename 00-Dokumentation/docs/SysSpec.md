@@ -177,26 +177,25 @@ Durch die Instanzierung eines Loggers wird sofort ein `LoggerSocket` erstellt un
 ### LoggerServer
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
 
-#### LoggerServer
+#### LoggerServer - Class
 Der LoggerServer besitzt eine `main` Methode, welche für das Starten des Servers verantwortlich ist. Die Klasse bestitz ausserdem drei wichtige lokale Konstanten.
 
 * ExecutorService
 
-Dies ist ein ThreadPool, welcher für die einzelnen LogHandler abarbeitet.
+Dies ist ein ThreadPool, welcher für die einzelnen LogHandler abarbeitet. Genauer handelt es sich um einen `newFixedThreadPool` mit fünf Threads.
 
 * LogWriterAdapter
 
-Dies ist die Referenz zum Adapter, welche einmalig erzeugt wird und jedem LogHandler zur Verwendung mitgegeben wird.
+Dies ist die Referenz zum Adapter, welche einmalig erzeugt wird und jedem `LogHandler` zur Verwendung mitgegeben wird. Diest ist die Schnittstelle zum `StringPersistor`.
 
 * ServerSocket
 
-Der Socket ist die Anlaufstelle des Servers. TCP Packete werden damit empfangen. Der LoggerServer erstellt für jede erhaltene Nachricht einen eigenen LogHandler.
+Der Socket ist die Anlaufstelle des Servers. TCP Packete werden damit empfangen. Der LoggerServer erstellt für jede erhaltene Nachricht einen eigenen LogHandler. Der ServerSocket ist mit der Klasse `LoggerServerSocket` implementiert
 
-
-#### LoggerServerSocket
+#### LoggerServerSocket - Class
 Der LoggerServerSocket erstellt einen ServerSocket. Dafür liest er die Konfiguarionen mit der Methode `loadConfigFile()` aus dem Konfigurationsfile. Falls das File `config.properties` nicht existiert, werden standard Werte verwendet. Mit diesen Werten wird ein ServerSocket erstellt. Der Socket wird mit der statischen Methode `create()` erstellt. 
 
-#### LogHandler
+#### LogHandler - Class
 Der LogHandler wird vom LoggerServer erstellt. Dieser ist für die asynchron Weitergabe an den LogWriterAdapter verantwortlich. Dementsprechend ist die impementierung auch einfach gehalten. Die Run-Methode sieht wie folgt aus:
 
 ```java
@@ -206,10 +205,11 @@ public void run() {
 ```
 
 ### StringPersistor
-TODO
+// TODO james (die implementation grob beschreiben)
 
 #### LogFile.txt
-****
+
+// TODO james (Übertitel weg und evt umschreiben wenn nötig)
 
 Das `LogFile.txt` ist das Text-Dokument, in welches alle `LogMessage`-Objekte gespeichert werden.##### Interaktionen
 Das `LogFile.txt` wird durch den `LogWriterAdapter` erstellt und dem `StringPersistor` übergeben. Danach werden die `LogMessage`-Objekte über den `StringPersistor` mit Hilfe des `LogWriterAdapter` in das `LogFile.txt`.
@@ -241,9 +241,9 @@ Hier wird wieder das Adapter-Pattern verwendet, da die Implementation des Format
 
 ****
 
-## 5 Verwendung von Komponenten
+## 5 Verwendung des Loggers
 
-### 5.1 Einbinden des Loggers auf einem Client
+### 5.1 Einbinden auf einem Client
 Um den Logger in einer Client-Applikation in Betrieb zu nehmen, muss dafür mit der `LoggerFactory` ein `LoggerSetup`-Objekt geholt werden. Hierfür muss der Factory-Methode `getLoggerSetup` der "Fully Qualified Class Name" einer Klasse übergeben werden, die das `LoggerSetup` Interface implementiert. Über das `LoggerSetup`-Objekt können dann verschiedene `Logger` erstellt werden. 
 
 Zum besseren Verständnis folgt eine Beispiel-Implementierung:
@@ -261,7 +261,7 @@ try {
 }
 ```
 
-### 5.2 GameOfLife Einbindung des Loggers
+### 5.2 GameOfLife Einbindung
 Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das `Logger`-Singleton. Um den Logger in Betrieb zu nehmen, wird über die statische `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung instanziiert. 
 Dafür wird die Konfigurationsdatei `config.properties` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Komponente austauschen.
 Zur Veranschaulichung folgt der mögliche Inhalt von `config.properties`:
@@ -317,6 +317,7 @@ Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt v
 
 
 
+****
 
 ## 7 Environment
 Hier sind die Umgebungsanforderung für unseren MessageLogger aufgelistet.
