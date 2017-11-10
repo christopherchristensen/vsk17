@@ -1,5 +1,6 @@
 # Systemspezifikationen
 
+<!--always update PDF after editing-->
 
 
 **Teammitglieder**:
@@ -9,14 +10,21 @@
 * Lukas Arnold
 * Melvin Werthmüller
 
-**Version**: 2.0
+// TODO Update this value <br>
+**Version**: 2.1
 
 // TODO Update this list
 
-| Rev.	| Datum 		|Autor 		            | Bemerkungen            |  Status     |
-|:-----|:-----------|:-----------------------:|:-----------           |:------------|
-| 1.1	|				|                         |                       |             |
-| 		|				|						      |                       |             |
+| Rev.	| Datum 		| Autor 				      | Bemerkungen             |  Status     |
+|:-----|:-----------|:-----------------------:|:-----------             |:------------|
+| 1.1	|  24.10.17	| Valentin Bürgler        | Erster Entwurf          |   done      |
+| 1.2	|	31.10.17	| Christopher Christensen | Erweiterung Kap.1/2     |   done      |
+| 1.3	|	01.11.17	| Valentin Bürgler        | Bearbeitung Kap.2/4     |   done      |
+| 1.4	|	03.11.17	| Valentin Bürgler        | Bearbeitung Kap.1/3, Diagramme + `config`-File   |   done      |
+| 1.5	|	05.11.17	| Christopher Christensen | Für Zwischenabgabe prüfen|   done      |
+| 1.6	|	05.11.17	| Valentin Bürgler        | Überarbeitung aller Kapitel| done      |
+| 2.0	|	06.11.17	| Christopher Christensen | Aufbereitung für Merge mit alter Dokumentation     |   done      |
+| 2.1	|	32.10.17	| Christopher Christensen | Merge SysSpec mit alter Dokumentation     |   done      |
 
 
 ****
@@ -87,6 +95,8 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 
 *	`LogWriterAdapter`*	`config.properties`*	TCP/IP Schnittstelle
+
+// TODO wie wird hier der Merge gemacht? Interne Schnittstellen $\to$ Implementation von Komponenten ...
 
 #### Schnittstelle 1, etc.
 <!--Genauer Name der Schnittstelle, Kurzbeschreibung der Funktionalität, ggf. Autoren und Besitzer (zwischen wem wurde die Schnittstelle ausgehandelt?), ggf. Version-->##### Interaktionen
@@ -196,22 +206,17 @@ Der Stringpersistor ermöglicht es dem LogHandler (via LogWriterAdapter) eine Ze
 In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung. Dieses `Logger`-Objekt bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
 ### 5.2 Ablauf auf dem Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. 
-
-
-## 6 Environment
-// TODO 
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
 
 
 
 
 
 
-
-## 7 Testing
+## 6 Testing
 Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
 
-### 7.1 Unit Testing
+### 6.1 Unit Testing
 
 #### LoggerCommon
 Zur Verifikation der `LogMessage`-Klasse gibt es einen `LogMessageTest`, welcher das wichtigste Verhalten der Klasse überprüft. 
@@ -225,9 +230,20 @@ Der `LogWriterAdapter` hat nur die Methode `void writeLogMessage(LogMessage logM
 #### StringPersistor
 Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanzieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der LogWriterAdapter getestet (siehe Kapitel Unit Testing > LogWriterAdapter). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
 
-### 7.2 Manual Testing
+### 6.2 Manual Testing
 #### GameOfLife
 Für den Integrationstest der Einbindung in die GameOfLife Applikation wird geprüft, ob die Datei "LogFile.txt" zur Speicherung der Logs auf dem Dateisystem erstellt wurde. Dazu wird zuerst die `main` Methode des `LoggerServer` gestartet. Dann wird die GameOfLife Applikation gestartet. Weiter wird getestet, ob Log-Einträge in "LogFile.txt" vorhanden sind, denn der Aufruf der `init` Methode sollte bereits zu einem Log-Eintrag auf `LogLevel.INFO` mit der Nachricht "Initializing UI..." führen.
 
 #### LoggerComponent & LoggerServer
 Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogWriterAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > LogWriterAdapter).
+
+
+
+
+
+
+
+## 7 Environment
+Hier sind die Umgebungsanforderung für unseren MessageLogger aufgelistet.
+
+*	Die Logger-Komponente ist mit **Java 1.8.0** realisiert. Es gelten die entsprechenden System-Anforderungen für Java 1.8.0.*	Der Fully-Qualified Class Name der LoggerFactory, die IP Adresse und die Portnummer des Servers müssen in einer Konfigurationsdatei «**config.properties**» vorliegen, um eine beliebige Logger-Komponente eines anderen Teams ohne Anpassungen im Code an das Spiel zu koppeln.*	Eine **Internetverbindung** wird benötigt, um die Nachrichten an den Server zu senden.
