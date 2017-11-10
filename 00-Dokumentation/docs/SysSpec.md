@@ -11,7 +11,7 @@
 * Melvin Werthmüller
 
 // TODO Update this value <br>
-**Version**: 2.1
+**Version**: 2.2
 
 // TODO Update this list
 
@@ -24,8 +24,8 @@
 | 1.5	|	05.11.17	| Christopher Christensen | Für Zwischenabgabe prüfen|   done      |
 | 1.6	|	05.11.17	| Valentin Bürgler        | Überarbeitung aller Kapitel| done      |
 | 2.0	|	06.11.17	| Christopher Christensen | Aufbereitung für Merge mit alter Dokumentation     |   done      |
-| 2.1	|	32.10.17	| Christopher Christensen | Merge SysSpec mit alter Dokumentation     |   done      |
-
+| 2.1	|	10.11.17	| Christopher Christensen | Merge SysSpec mit alter Dokumentation     |   done      |
+| 2.2	|	10.11.17	| Christopher Christensen | LogFile.txt Specs added |   done      |
 
 ****
 
