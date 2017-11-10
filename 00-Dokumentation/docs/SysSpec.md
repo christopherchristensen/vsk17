@@ -106,8 +106,12 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 #### Logger
 // TODO luki (erklärung der Logger schnittstelle ohni konkrete implementation)
 
+> Verwendete Version: TODO luki
+
 #### LoggerSetup
 // TODO luki (erklärung der LoggerSetup schnittstelle ohne konkrete implementation)
+
+> Verwendete Version: TODO luki
 
 #### LogLevel
 // TODO luki (erklärung weshabl es diese zentrale loglevels gibt und was logLevels sind) 
@@ -120,8 +124,12 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 | `ERROR`    |
 | `CRITICAL` |
 
+> Verwendete Version: TODO luki
+
 #### String Persistor
 Der Stringpersistor ermöglicht es <!--dem LogHandler (via LogWriterAdapter)--> eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
+
+> Verwendete Version: TODO james
 
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
