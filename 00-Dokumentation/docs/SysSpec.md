@@ -11,7 +11,7 @@
 * Melvin Werthmüller
 
 // TODO Update this value <br>
-**Version**: 2.3
+**Version**: 2.4
 
 // TODO Update this list
 
@@ -27,6 +27,7 @@
 | 2.1	|	10.11.17	| Christopher Christensen | Merge SysSpec mit alter Dokumentation     |   done      |
 | 2.2	|	10.11.17	| Christopher Christensen | LogFile.txt Specs added |   done      |
 | 2.3	|	10.11.17	| Melvin Werthmüller | Content organisation |   done      |
+| 2.4	|	10.11.17	| Melvin Werthmüller | LoggerServer specs updated |   done      |
 
 
 
@@ -159,9 +160,10 @@ Verwendung:
 TODO luki wie & wo wird diese verwendet
 
 #### TCP/IP Schnittstelle
-Der Logger beinhaltet die Funktion `log`, welche eine LogMessage an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+Der Logger beinhaltet die Funktion `log`, welche eine `LogMessage` an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
-// TODO melvin wie ist die übertragung
+Die Übertrag der Meldungen geschieht über den `ObjectInputStream` / `ObjectOutputStream`, welche die serialisierbare Klasse `LogMessage` als Objekte überträgt.
+
 
 
 
@@ -194,6 +196,15 @@ Der Socket ist die Anlaufstelle des Servers. TCP Packete werden damit empfangen.
 
 #### LoggerServerSocket - Class
 Der LoggerServerSocket erstellt einen ServerSocket. Dafür liest er die Konfiguarionen mit der Methode `loadConfigFile()` aus dem Konfigurationsfile. Falls das File `config.properties` nicht existiert, werden standard Werte verwendet. Mit diesen Werten wird ein ServerSocket erstellt. Der Socket wird mit der statischen Methode `create()` erstellt. 
+
+Die standard Werte sind wie folgt definiert:
+
+| Name | Value |
+| ---- | ----- |
+| host | 127.0.0.1 |
+| port | 54321 |
+| amount | 10 |
+
 
 #### LogHandler - Class
 Der LogHandler wird vom LoggerServer erstellt. Dieser ist für die asynchron Weitergabe an den LogWriterAdapter verantwortlich. Dementsprechend ist die impementierung auch einfach gehalten. Die Run-Methode sieht wie folgt aus:
