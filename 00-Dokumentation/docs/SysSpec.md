@@ -94,11 +94,14 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 
-*	`LogWriterAdapter`*	`config.properties`*	TCP/IP Schnittstelle
+*	`LogWriterAdapter`*	`config.properties`
+* 	`LogFile.txt`*	TCP/IP Schnittstelle
 
 // TODO wie wird hier der Merge gemacht? Interne Schnittstellen $\to$ Implementation von Komponenten ...
 
 #### Schnittstelle 1, etc.
+****
+
 <!--Genauer Name der Schnittstelle, Kurzbeschreibung der Funktionalität, ggf. Autoren und Besitzer (zwischen wem wurde die Schnittstelle ausgehandelt?), ggf. Version-->##### Interaktionen
 <!--Operationen (z.B. Funktionen, Methoden) oder Datenaustausch (z.B. Nachrichten)
 + Fehlerbehandlung-->
@@ -111,6 +114,40 @@ Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 
 ##### Entwurfsentscheide
 <!--Fragestellungen, Einflüsse, Annahmen, Alternativen und Begründungen für Entwurfsentscheidungen im Zusammenhang mit der Schnittstelle, falls angebrachtWelche Gründe haben zum Entwurf dieser Schnittstelle geführt? Welche Alternativen gibt es, und warum wurden diese verworfen?-->
+
+****
+
+#### LogFile.txt
+****
+
+Das `LogFile.txt` ist das Text-Dokument, in welches alle `LogMessage`-Objekte gespeichert werden.##### Interaktionen
+Das `LogFile.txt` wird durch den `LogWriterAdapter` erstellt und dem `StringPersistor` übergeben. Danach werden die `LogMessage`-Objekte über den `StringPersistor` mit Hilfe des `LogWriterAdapter` in das `LogFile.txt`.
+
+##### Einstellungen
+Das Format mit dem die `LogMessage`-Objekte in das `LogFile.txt` geschrieben werden sieht folgendermassen aus.
+
+1. Datum & Zeit vom Erhalten der `LogMessage`
+2. Datum & Zeit vom Erstellen der `LogMessage`
+3. LogLevel der `LogMessage`
+4. Nachricht in der `LogMessage`
+
+```
+String message = logMessage.getReceivedAt() + ";" 
++ logMessage.getCreatedAt() + ";" 
++ logMessage.getLogLevel() + ";" 
++ logMessage.getMessage();
+```
+
+
+##### Qualitätsmerkmale
+Durch diese Implementation wird das Format der `LogMessage` nicht an die Implementation des `StringPersistor` gebunden, sondern kann beliebig im `LogWriterAdapter` angepasst werden. Nach dem Implementieren des Formats im `LogWriterAdapter` kann versichert werden, dass die `LogMessage`-Objekte immer im gleichen Format ins `LogFile.txt` gespeichert werden.
+
+##### Entwurfsentscheide
+Hier wird wieder das Adapter-Pattern verwendet, da die Implementation des Formats, in der die `LogMessage`-Objekte gespeichert werden, im `LogWriterAdapter`implementiert wird.
+
+****
+
+****
 
 ## 4 Implementation von Komponenten
 
