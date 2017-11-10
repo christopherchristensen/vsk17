@@ -10,10 +10,10 @@ Teammitglieder:
 * Melvin Werthmüller
 
 ## Anforderungen
-![](base-system-overview.png)
+![](img/base-system-overview.png)
 
 ## Übersicht
-![](VSK_UML.png)
+![](img/VSK_UML.png)
 
 ### Ablauf auf dem Client
 In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung. Dieses `Logger`-Objekt bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
