@@ -10,8 +10,6 @@
 * Lukas Arnold
 * Melvin Werthmüller
 
-// TODO Update this value <br>
-**Version**: 2.4
 
 // TODO Update this list
 
@@ -28,6 +26,7 @@
 | 2.2	|	10.11.17	| Christopher Christensen | LogFile.txt Specs added |   done      |
 | 2.3	|	10.11.17	| Melvin Werthmüller | Content organisation |   done      |
 | 2.4	|	10.11.17	| Melvin Werthmüller | LoggerServer specs updated |   done      |
+| 2.5	|	10.11.17	| Christopher Christensen | einige TODOs erledigt   |   done      |
 
 
 
@@ -61,6 +60,7 @@ Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für j
 
 
 
+
 ****
 
 ## 2 Architektur und Designentscheide
@@ -78,18 +78,28 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).#### Strategie-Pattern
 // TODO vali (nur Strategie Pattern beschreiben, nicht Factory etc. zusammen. Und wo dieses verwendet wird in unserem Projket)
 
+> Strategie-Pattern ist ein Verhaltensmuster
+
 #### Singleton-Pattern
 // TODO vali (singeltonprinzip erklären und wo dieses verwendet wird in unserem Projket)
+
+> Strategie-Pattern ist ein Erzeugungsmuster
 
 #### Fabrikmethode-Pattern
 // TODO vali (fabrikprinzip erklären und wo dieses verwendet wird in unserem Projket)
 
+> Strategie-Pattern ist ein Erzeugungsmuster
+
 #### Adapter-Pattern
-// TODO james (überarbeiten, adapterprinzip. erklären und Verwendung in unserem Projekt)
-Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, welcher danach die `LogMessage` in ein `File` schreibt, verwenden wir das Adapter-Modell. Damit verletzen wir die Wiederverwendbarkeit des `StringPersistor` nicht und können eine angepasste Implementation für den `LogHandler` erstellen. Damit erhalten wir die effektiv gewünschte Zielschnittstelle.
+Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung zu gewährleisten.
+
+Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, verwenden wir das Adapter-Modell. So kann die Implementation der `StringPersistor`-Klasse ungeändert bleiben und wir können eine angepasste Implementation für den `LogHandler` erstellen. Dadurch erhalten wir die effektiv gewünschte Zielschnittstelle.
 
 #### Konfigurationsdatei
 // TODO luki (prinzip von konfigurationsdateien erklären und wo dieses verwendet wird in unserem Projken)
+
+
+
 
 
 
@@ -126,16 +136,16 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 
 > Verwendete Version: TODO luki
 
-#### String Persistor
-Der Stringpersistor ermöglicht es <!--dem LogHandler (via LogWriterAdapter)--> eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
+#### StringPersistor
 
-> Verwendete Version: TODO james
+
+> Verwendete Version: 1.0.0 (ch.hslu.vsk.g01.stringpersistor)
 
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 *	`LogMessage`
-*	`WriteAdapter`*	`config.properties` Client
-* 	`config.properties` Server*	TCP/IP Schnittstelle
+*	`WriteAdapter`*	`client.properties`
+* 	`server.properties`*	TCP/IP Schnittstelle
 
 #### LogMessage
 Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
@@ -149,21 +159,17 @@ Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabell
 
 
 #### WriteAdapter
-Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und versteht sich somit als Adapter.  Der Adapter definiert das File und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt nur über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`.
-
-// TODO james interfacebeschreibung überprüfen. neue methode hinzufügen
-
-Verwendung:
+Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und versteht sich somit als Adapter.  Der Adapter definiert das File und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<PersistedString> readLogMessages(int i)` vor. Der übergebene Parameter liefert die gewünschte Anzahl letzter `LogMessage`-Objekten aus dem LogFile zurück.
 
 Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
 
-#### `config.properties` Client
+#### client.properties
 TODO Beschreibung Luki
 
 Verwendung:
 TODO luki wie & wo wird diese verwendet
 
-#### `config.properties` Server
+#### server.properties
 TODO Beschreibung Luki
 
 Verwendung:
@@ -226,16 +232,19 @@ public void run() {
 ```
 
 ### StringPersistor
-// TODO james (die implementation grob beschreiben)
+In der StringPersistor-Komponente wird dafür gesorgt, dass die `LogMessage`-Objekte in ein `File` geschrieben werden.
+
+#### StringPersistor - Class
+Der Stringpersistor schreibt eine Zeitinstanz mit einer Log-Message in ein Log-File. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
+
+#### LogWriterAdapter - Class
+Der `LogWriterAdapter` implementiert das Interface `WriteAdapter` und überschreibt die Methoden `writeLogMessage(LogMessage logMessage)` und die Methode `readLogMessages(int i)`. Die Methoden haben dieselbe Funktion, wie die Methoden der `StringPersistor`-Klasse (`save` und `get`), sind jedoch auf den `LogHandler` angepasst.
 
 #### LogFile.txt
 
-// TODO james (Übertitel weg und evt umschreiben wenn nötig)
+Das `LogFile.txt` ist das Text-Dokument, in welches alle `LogMessage`-Objekte gespeichert werden.Es wird durch den `LogWriterAdapter` erstellt und dem `StringPersistor` übergeben. Danach werden die `LogMessage`-Objekte über den `StringPersistor` mit Hilfe des `LogWriterAdapter` in das `LogFile.txt`.
 
-Das `LogFile.txt` ist das Text-Dokument, in welches alle `LogMessage`-Objekte gespeichert werden.##### Interaktionen
-Das `LogFile.txt` wird durch den `LogWriterAdapter` erstellt und dem `StringPersistor` übergeben. Danach werden die `LogMessage`-Objekte über den `StringPersistor` mit Hilfe des `LogWriterAdapter` in das `LogFile.txt`.
-
-##### Einstellungen
+##### Format
 Das Format mit dem die `LogMessage`-Objekte in das `LogFile.txt` geschrieben werden sieht folgendermassen aus.
 
 1. Datum & Zeit vom Erhalten der `LogMessage`
@@ -249,11 +258,7 @@ String message = logMessage.getReceivedAt() + ";"
 + logMessage.getLogLevel() + ";" 
 + logMessage.getMessage();
 ```
-##### Qualitätsmerkmale
-Durch diese Implementation wird das Format der `LogMessage` nicht an die Implementation des `StringPersistor` gebunden, sondern kann beliebig im `LogWriterAdapter` angepasst werden. Nach dem Implementieren des Formats im `LogWriterAdapter` kann versichert werden, dass die `LogMessage`-Objekte immer im gleichen Format ins `LogFile.txt` gespeichert werden.
 
-##### Entwurfsentscheide
-Hier wird wieder das Adapter-Pattern verwendet, da die Implementation des Formats, in der die `LogMessage`-Objekte gespeichert werden, im `LogWriterAdapter`implementiert wird.
 
 
 
