@@ -1,29 +1,110 @@
-# Dokumentation Message Logger
+# Systemspezifikationen
 
-Version: 1.0
 
-Teammitglieder:
+
+**Teammitglieder**:
 
 * Christopher Christensen
 * Valentin Bürgler
 * Lukas Arnold
 * Melvin Werthmüller
 
-## Anforderungen
-![](img/base-system-overview.png)
+**Version**: 2.0
 
-## Übersicht
-![](img/VSK_UML.png)
+// TODO Update this list
 
-### Ablauf auf dem Client
-In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung. Dieses `Logger`-Objekt bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+| Rev.	| Datum 		|Autor 		            | Bemerkungen            |  Status     |
+|:-----|:-----------|:-----------------------:|:-----------           |:------------|
+| 1.1	|				|                         |                       |             |
+| 		|				|						      |                       |             |
 
-### Ablauf auf dem Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. 
 
-## Implementation
+****
 
-### Einbinden des Loggers auf einem Client
+
+## 1 Systemübersicht
+
+### 1.1 Grobe Systemübersicht
+<!--![](img/base-system-overview.png)-->
+<img src="img/base-system-overview.png" width=400>
+
+Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu. 
+
+### 1.2 Vollständige Systemübersicht
+Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
+<!--![](img/VSK_UML.png)-->
+<img src="img/VSK_UML.png" width=500>
+
+Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Komponenten detaillierter beschrieben. Auch die Relationen untereinander werden ausführlich aufgezeigt.
+
+****
+
+
+## 2 Architektur und Designentscheide
+Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu verwenden, um eine saubere Architektur unseres MessageLoggers zu erreichen.
+
+
+### 2.1 Modelle und Sichten
+#### Packetdiagramm
+<img src="img/Paketdiagramm.png" width=400>
+
+#### Klassendiagramm
+// TODO Melvin & Vali
+
+
+### 2.2 Daten (Mengengerüst und Strukturen)
+// TODO tbd
+
+### 2.3 Entwurfsentscheide
+Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).#### Strategie-Pattern
+// TODO tbd (nur Strategie Pattern beschreiben, nicht Factory etc. zusammen)
+
+#### Singleton-Pattern
+// TODO tbd
+
+#### Fabrikmethode-Pattern
+// TODO tbd
+
+#### Adapter-Pattern
+Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, welcher danach die `LogMessage` in ein `File` schreibt, verwenden wir das Adapter-Modell. Damit verletzen wir die Wiederverwendbarkeit des `StringPersistor` nicht und können eine angepasste Implementation für den `LogHandler` erstellen. Damit erhalten wir die effektiv gewünschte Zielschnittstelle.
+
+#### Konfigurationsdatei
+// TODO tbd, und gehört das auch hierhin?
+
+
+****
+
+
+## 3 Schnittstellen
+// TODO
+
+### 3.1 Externe Schnittstellen
+Die folgenden Schnittstellen wurden uns vorgeschrieben.
+
+*	`Logger`*	`LoggerSetup`*	`LogLevel`*	`LogMessage`*	`StringPersistor`
+
+### 3.2 Interne Schnittstellen
+Die folgenden Schnittstellen wurden von uns vorgeschrieben.
+
+*	`LogWriterAdapter`*	`config.properties`*	TCP/IP Schnittstelle
+
+#### Schnittstelle 1, etc.
+<!--Genauer Name der Schnittstelle, Kurzbeschreibung der Funktionalität, ggf. Autoren und Besitzer (zwischen wem wurde die Schnittstelle ausgehandelt?), ggf. Version-->##### Interaktionen
+<!--Operationen (z.B. Funktionen, Methoden) oder Datenaustausch (z.B. Nachrichten)
++ Fehlerbehandlung-->
+
+##### Einstellungen
+<!--Kann das Verhalten der Schnittstelle oder der Ressourcen verändert oder konfiguriert werden? Mögliche Konfigurationsparameter-->
+
+##### Qualitätsmerkmale
+<!--Aussagen über Qualitätsmerkmale, an die Implementierer gebunden sind und auf die sich Nutzer verlassen können. Welche Qualitätseigenschaften wie Verfügbarkeit, Performance, Sicherheit gelten für diese Schnittstelle? Neudeutsch heisst dieser Teil der Schnittstellenbeschreibung Quality-of-Service (QoS) Requirements. Mengengerüste Laufzeit Durchsatz / Datenvolumen Verfügbarkeit-->
+
+##### Entwurfsentscheide
+<!--Fragestellungen, Einflüsse, Annahmen, Alternativen und Begründungen für Entwurfsentscheidungen im Zusammenhang mit der Schnittstelle, falls angebrachtWelche Gründe haben zum Entwurf dieser Schnittstelle geführt? Welche Alternativen gibt es, und warum wurden diese verworfen?-->
+
+## 4 Implementation von Komponenten
+
+### 4.1 Einbinden des Loggers auf einem Client
 Um den Logger in einer Client-Applikation in Betrieb zu nehmen, muss dafür mit der `LoggerFactory` ein `LoggerSetup`-Objekt geholt werden. Hierfür muss der Factory-Methode `getLoggerSetup` der "Fully Qualified Class Name" einer Klasse übergeben werden, die das `LoggerSetup` Interface implementiert. Über das `LoggerSetup`-Objekt können dann verschiedene `Logger` erstellt werden. 
 
 Zum besseren Verständnis folgt eine Beispiel-Implementierung:
@@ -71,7 +152,7 @@ Der Logger besteht hauptsächlich aus der Klasse `BaseLogger`, welcher das `Logg
 
 Durch die Instanzierung eines Loggers wird sofort ein `LoggerSocket` erstellt und gestartet. Er enthält eine Queue mit den Meldungen, welche an den Server gesendet werden sollten. Er bietet ausserdem die Methode `queueLogMessage`, welche asynchron eine `LogMessage` in die Queue speichert. Beim Starten des Sockets wird ein `LogConsumer`-Thread gestartet, welcher ständig die Queue abarbeitet und die enthaltenen Nachrichten via einen `ObjectOutputStream` über einen TCP-Socket an den Server sendet. 
 
-### Server
+### 4.2 Server
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
 
 #### LoggerServer
@@ -108,10 +189,29 @@ Der LogWriterAdapter stellt die Schnittstelle vom LogHandler zum Stringpersistor
 #### String Persistor
 Der Stringpersistor ermöglicht es dem LogHandler (via LogWriterAdapter) eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
 
-## Testing
+
+
+## 5 Verwendung von Komponenten
+### 5.1 Ablauf auf dem Client
+In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung. Dieses `Logger`-Objekt bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+
+### 5.2 Ablauf auf dem Server
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. 
+
+
+## 6 Environment
+// TODO 
+
+
+
+
+
+
+
+## 7 Testing
 Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
 
-### Unit Testing
+### 7.1 Unit Testing
 
 #### LoggerCommon
 Zur Verifikation der `LogMessage`-Klasse gibt es einen `LogMessageTest`, welcher das wichtigste Verhalten der Klasse überprüft. 
@@ -125,7 +225,7 @@ Der `LogWriterAdapter` hat nur die Methode `void writeLogMessage(LogMessage logM
 #### StringPersistor
 Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanzieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der LogWriterAdapter getestet (siehe Kapitel Unit Testing > LogWriterAdapter). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
 
-### Manual Testing
+### 7.2 Manual Testing
 #### GameOfLife
 Für den Integrationstest der Einbindung in die GameOfLife Applikation wird geprüft, ob die Datei "LogFile.txt" zur Speicherung der Logs auf dem Dateisystem erstellt wurde. Dazu wird zuerst die `main` Methode des `LoggerServer` gestartet. Dann wird die GameOfLife Applikation gestartet. Weiter wird getestet, ob Log-Einträge in "LogFile.txt" vorhanden sind, denn der Aufruf der `init` Methode sollte bereits zu einem Log-Eintrag auf `LogLevel.INFO` mit der Nachricht "Initializing UI..." führen.
 
