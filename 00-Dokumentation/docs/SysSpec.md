@@ -126,7 +126,7 @@ Der Stringpersistor ermöglicht es <!--dem LogHandler (via LogWriterAdapter)--> 
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 *	`LogMessage`
-*	`LogWriterAdapter`*	`config.properties` Client
+*	`WriteAdapter`*	`config.properties` Client
 * 	`config.properties` Server*	TCP/IP Schnittstelle
 
 #### LogMessage
@@ -140,12 +140,14 @@ Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabell
 | receivedAt | Zeitpunkt des Erhaltens  | Instant |
 
 
-#### LogWriterAdapter
-Der LogWriterAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und versteht sich somit als Adapter.  Der Adapter definiert das File und das Format der zu speichernden `LogMessage`-Objekte. Der LogWriterAdapter verfügt nur über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`.
+#### WriteAdapter
+Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und versteht sich somit als Adapter.  Der Adapter definiert das File und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt nur über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`.
+
+// TODO james interfacebeschreibung überprüfen. neue methode hinzufügen
 
 Verwendung:
 
-Der Server nutzt diesen Adapter, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
+Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
 
 #### `config.properties` Client
 TODO Beschreibung Luki
