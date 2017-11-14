@@ -194,10 +194,22 @@ dann festgelegt auf welche Adresse und auf welchen Port sich der LoggerServer be
 kann mit dem Schlüssel `name` noch der Name des Loggers festgelegt werden. 
 
 #### server.properties
-TODO Beschreibung Luki
+| Schlüssel | Standard-Wert |
+| --------- | ------------- |
+| host      | localhost     |
+| port      | 54321         |
+| amount    | 10            |
 
-Verwendung:
-TODO luki wie & wo wird diese verwendet
+Das File `server.properties` ist dazu da, um den LoggerServer zu konfigurieren. Bei Starten des Servers 
+wird im gleichen Ordner nach dieser Datei gesucht und die Werte eingelesen. Falls die Konfigurationsdatei 
+nicht existiert oder fehlerhaft ist, werden die oben definierten Standard-Werte verwendet. 
+
+Mit dem Schlüssel `host` kann definert werden, an welche Adresse der Server gebunden werden soll. 
+Über den Schlüssel `port` lässt sich dann noch der Port definieren. Falls der Port bereits besetzt 
+ist kommt es zu einer Fehlermeldung und der Server startet nicht. Über den Schlüssel `amount` 
+wird definiert wie viele Clients gleichzeitig auf den Server zugreifen können. Falls alle Plätze 
+besetzt sind und ein weiterer Client zugreifen will, muss er warten bis ein Client die Verbindung
+beendet und somit ein Platz frei wird. 
 
 #### TCP/IP Schnittstelle
 Der Logger beinhaltet die Funktion `log`, welche eine `LogMessage` an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
