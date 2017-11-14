@@ -13,20 +13,20 @@
 
 // TODO Update this list
 
-| Rev.	| Datum 		| Autor 				      | Bemerkungen             |  Status     |
-|:-----|:-----------|:-----------------------:|:-----------             |:------------|
-| 1.1	|  24.10.17	| Valentin Bürgler        | Erster Entwurf          |   done      |
-| 1.2	|	31.10.17	| Christopher Christensen | Erweiterung Kap.1/2     |   done      |
-| 1.3	|	01.11.17	| Valentin Bürgler        | Bearbeitung Kap.2/4     |   done      |
-| 1.4	|	03.11.17	| Valentin Bürgler        | Bearbeitung Kap.1/3, Diagramme + `config`-File   |   done      |
-| 1.5	|	05.11.17	| Christopher Christensen | Für Zwischenabgabe prüfen|   done      |
-| 1.6	|	05.11.17	| Valentin Bürgler        | Überarbeitung aller Kapitel| done      |
-| 2.0	|	06.11.17	| Christopher Christensen | Aufbereitung für Merge mit alter Dokumentation     |   done      |
-| 2.1	|	10.11.17	| Christopher Christensen | Merge SysSpec mit alter Dokumentation     |   done      |
-| 2.2	|	10.11.17	| Christopher Christensen | LogFile.txt Specs added |   done      |
-| 2.3	|	10.11.17	| Melvin Werthmüller | Content organisation |   done      |
-| 2.4	|	10.11.17	| Melvin Werthmüller | LoggerServer specs updated |   done      |
-| 2.5	|	10.11.17	| Christopher Christensen | einige TODOs erledigt   |   done      |
+| Rev. | Datum    | Autor                   | Bemerkungen                                    | Status |
+|:-----|:---------|:-----------------------:|:-----------------------------------------------|:-------|
+| 1.1  | 24.10.17 | Valentin Bürgler        | Erster Entwurf                                 | done   |
+| 1.2  | 31.10.17 | Christopher Christensen | Erweiterung Kap.1/2                            | done   |
+| 1.3  | 01.11.17 | Valentin Bürgler        | Bearbeitung Kap.2/4                            | done   |
+| 1.4  | 03.11.17 | Valentin Bürgler        | Bearbeitung Kap.1/3, Diagramme + `config`-File | done   |
+| 1.5  | 05.11.17 | Christopher Christensen | Für Zwischenabgabe prüfen                      | done   |
+| 1.6  | 05.11.17 | Valentin Bürgler        | Überarbeitung aller Kapitel                    | done   |
+| 2.0  | 06.11.17 | Christopher Christensen | Aufbereitung für Merge mit alter Dokumentation | done   |
+| 2.1  | 10.11.17 | Christopher Christensen | Merge SysSpec mit alter Dokumentation          | done   |
+| 2.2  | 10.11.17 | Christopher Christensen | LogFile.txt Specs added                        | done   |
+| 2.3  | 10.11.17 | Melvin Werthmüller      | Content organisation                           | done   |
+| 2.4  | 10.11.17 | Melvin Werthmüller      | LoggerServer specs updated                     | done   |
+| 2.5  | 10.11.17 | Christopher Christensen | einige TODOs erledigt                          | done   |
 
 
 
@@ -348,4 +348,9 @@ Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt v
 ## 7 Environment
 Hier sind die Umgebungsanforderung für unseren MessageLogger aufgelistet.
 
-*	Die Logger-Komponente ist mit **Java 1.8.0** realisiert. Es gelten die entsprechenden System-Anforderungen für Java 1.8.0.*	Der Fully-Qualified Class Name der LoggerFactory, die IP Adresse und die Portnummer des Servers müssen in einer Konfigurationsdatei «**config.properties**» vorliegen, um eine beliebige Logger-Komponente eines anderen Teams ohne Anpassungen im Code an das Spiel zu koppeln.*	Eine **Internetverbindung** wird benötigt, um die Nachrichten an den Server zu senden.
+* Die Logger-Komponente ist mit **Java 1.8.0** realisiert.
+* Es gelten die entsprechenden System-Anforderungen für Java 1.8.0.
+* Der Fully-Qualified Class Name der LoggerFactory, die IP Adresse und die Portnummer des Servers müssen in der Konfigurationsdatei vorliegen
+* Durch Austauschen des Konfigurationsfiles kann eine beliebige Logger-Komponente eines anderen Teams ins Game integriert werden.
+* Der Austausch der Loggerkomponente ist ohne Anpassungen im Code an das Spiels möglich.
+* Eine **Internetverbindung** wird benötigt, um die Nachrichten an den Server zu senden.
