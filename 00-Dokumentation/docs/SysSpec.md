@@ -2,7 +2,6 @@
 
 <!--always update PDF after editing-->
 
-
 **Teammitglieder**:
 
 * Christopher Christensen
@@ -10,26 +9,22 @@
 * Lukas Arnold
 * Melvin Werthmüller
 
-
 // TODO Update this list
 
-| Rev.	| Datum 		| Autor 				      | Bemerkungen             |  Status     |
-|:-----|:-----------|:-----------------------:|:-----------             |:------------|
-| 1.1	|  24.10.17	| Valentin Bürgler        | Erster Entwurf          |   done      |
-| 1.2	|	31.10.17	| Christopher Christensen | Erweiterung Kap.1/2     |   done      |
-| 1.3	|	01.11.17	| Valentin Bürgler        | Bearbeitung Kap.2/4     |   done      |
-| 1.4	|	03.11.17	| Valentin Bürgler        | Bearbeitung Kap.1/3, Diagramme + `config`-File   |   done      |
-| 1.5	|	05.11.17	| Christopher Christensen | Für Zwischenabgabe prüfen|   done      |
-| 1.6	|	05.11.17	| Valentin Bürgler        | Überarbeitung aller Kapitel| done      |
-| 2.0	|	06.11.17	| Christopher Christensen | Aufbereitung für Merge mit alter Dokumentation     |   done      |
-| 2.1	|	10.11.17	| Christopher Christensen | Merge SysSpec mit alter Dokumentation     |   done      |
-| 2.2	|	10.11.17	| Christopher Christensen | LogFile.txt Specs added |   done      |
-| 2.3	|	10.11.17	| Melvin Werthmüller | Content organisation |   done      |
-| 2.4	|	10.11.17	| Melvin Werthmüller | LoggerServer specs updated |   done      |
-| 2.5	|	10.11.17	| Christopher Christensen | einige TODOs erledigt   |   done      |
-
-
-
+| Rev. | Datum    | Autor                   | Bemerkungen                                    | Status |
+|:-----|:---------|:-----------------------:|:-----------------------------------------------|:-------|
+| 1.1  | 24.10.17 | Valentin Bürgler        | Erster Entwurf                                 | done   |
+| 1.2  | 31.10.17 | Christopher Christensen | Erweiterung Kap.1/2                            | done   |
+| 1.3  | 01.11.17 | Valentin Bürgler        | Bearbeitung Kap.2/4                            | done   |
+| 1.4  | 03.11.17 | Valentin Bürgler        | Bearbeitung Kap.1/3, Diagramme + `config`-File | done   |
+| 1.5  | 05.11.17 | Christopher Christensen | Für Zwischenabgabe prüfen                      | done   |
+| 1.6  | 05.11.17 | Valentin Bürgler        | Überarbeitung aller Kapitel                    | done   |
+| 2.0  | 06.11.17 | Christopher Christensen | Aufbereitung für Merge mit alter Dokumentation | done   |
+| 2.1  | 10.11.17 | Christopher Christensen | Merge SysSpec mit alter Dokumentation          | done   |
+| 2.2  | 10.11.17 | Christopher Christensen | LogFile.txt Specs added                        | done   |
+| 2.3  | 10.11.17 | Melvin Werthmüller      | Content organisation                           | done   |
+| 2.4  | 10.11.17 | Melvin Werthmüller      | LoggerServer specs updated                     | done   |
+| 2.5  | 10.11.17 | Christopher Christensen | einige TODOs erledigt                          | done   |
 
 ****
 
@@ -39,10 +34,17 @@
 <!--![](img/base-system-overview.png)-->
 <img src="img/base-system-overview.png" width=400>
 
-Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu. 
+Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. 
+
+Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.
+
+Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.
+
+Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu. 
 
 ### 1.2 Vollständige Systemübersicht
-Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
+Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
+
 <!--![](img/VSK_UML.png)-->
 <img src="img/VSK_UML.png" width=500>
 
@@ -55,11 +57,6 @@ In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode
 
 ### 1.4 Ablauf auf dem Server
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
-
-
-
-
-
 
 ****
 
@@ -75,7 +72,9 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 // TODO Melvin & Vali (erstellen und einfügem des kompletten klassendiagrams)
 
 ### 2.2 Entwurfsentscheide
-Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).#### Strategie-Pattern
+Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
+
+#### Strategie-Pattern
 // TODO vali (nur Strategie Pattern beschreiben, nicht Factory etc. zusammen. Und wo dieses verwendet wird in unserem Projket)
 
 > Strategie-Pattern ist ein Verhaltensmuster
@@ -95,14 +94,8 @@ Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in e
 
 Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, verwenden wir das Adapter-Modell. So kann die Implementation der `StringPersistor`-Klasse ungeändert bleiben und wir können eine angepasste Implementation für den `LogHandler` erstellen. Dadurch erhalten wir die effektiv gewünschte Zielschnittstelle.
 
-#### Konfigurationsdatei
-// TODO luki (prinzip von konfigurationsdateien erklären und wo dieses verwendet wird in unserem Projken)
-
-
-
-
-
-
+#### Konfigurationsdateien
+Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhes File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
 
 ****
 
@@ -111,7 +104,10 @@ Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, v
 ### 3.1 Externe Schnittstellen
 Die folgenden Schnittstellen wurden uns vorgeschrieben.
 
-*	`Logger`*	`LoggerSetup`*	`LogLevel`*	`StringPersistor`
+* `Logger`
+* `LoggerSetup`
+* `LogLevel`
+* `StringPersistor`
 
 #### Logger
 // TODO luki (erklärung der Logger schnittstelle ohni konkrete implementation)
@@ -143,9 +139,12 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
-*	`LogMessage`
-*	`WriteAdapter`*	`client.properties`
-* 	`server.properties`*	TCP/IP Schnittstelle
+
+* `LogMessage`
+* `WriteAdapter`
+* `client.properties`
+*  `server.properties`
+* TCP/IP Schnittstelle
 
 #### LogMessage
 Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
@@ -163,7 +162,8 @@ Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und
 
 Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
 
-#### client.properties
+
+#### client.properties
 TODO Beschreibung Luki
 
 Verwendung:
@@ -179,9 +179,6 @@ TODO luki wie & wo wird diese verwendet
 Der Logger beinhaltet die Funktion `log`, welche eine `LogMessage` an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
 Die Übertrag der Meldungen geschieht über den `ObjectInputStream` / `ObjectOutputStream`, welche die serialisierbare Klasse `LogMessage` als Objekte überträgt.
-
-
-
 
 ****
 
@@ -259,12 +256,6 @@ String message = logMessage.getReceivedAt() + ";"
 + logMessage.getMessage();
 ```
 
-
-
-
-
-
-
 ****
 
 ## 5 Verwendung des Loggers
@@ -309,9 +300,6 @@ Die `LogLevels` finden folgende Verwendung:
 | `ERROR`    | Fehler, von welchen das System sich wieder erholen kann, wie z.B. Fehler beim Laden/Speichern einer Shape. |
 | `CRITICAL` | Fehler, von welchen das System sich nicht erholen kann und beendet werden muss, z.B. bei einer InterruptedException |
 
-
-
-
 ****
 
 ## 6 Testing
@@ -338,14 +326,14 @@ Für den Integrationstest der Einbindung in die GameOfLife Applikation wird gepr
 #### LoggerComponent & LoggerServer
 Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogWriterAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > LogWriterAdapter).
 
-
-
-
-
-
 ****
 
 ## 7 Environment
 Hier sind die Umgebungsanforderung für unseren MessageLogger aufgelistet.
 
-*	Die Logger-Komponente ist mit **Java 1.8.0** realisiert. Es gelten die entsprechenden System-Anforderungen für Java 1.8.0.*	Der Fully-Qualified Class Name der LoggerFactory, die IP Adresse und die Portnummer des Servers müssen in einer Konfigurationsdatei «**config.properties**» vorliegen, um eine beliebige Logger-Komponente eines anderen Teams ohne Anpassungen im Code an das Spiel zu koppeln.*	Eine **Internetverbindung** wird benötigt, um die Nachrichten an den Server zu senden.
+* Die Logger-Komponente ist mit **Java 1.8.0** realisiert.
+* Es gelten die entsprechenden System-Anforderungen für Java 1.8.0.
+* Der Fully-Qualified Class Name der LoggerFactory, die IP Adresse und die Portnummer des Servers müssen in der Konfigurationsdatei vorliegen
+* Durch Austauschen des Konfigurationsfiles kann eine beliebige Logger-Komponente eines anderen Teams ins Game integriert werden.
+* Der Austausch der Loggerkomponente ist ohne Anpassungen im Code an das Spiels möglich.
+* Eine **Internetverbindung** wird benötigt, um die Nachrichten an den Server zu senden.
