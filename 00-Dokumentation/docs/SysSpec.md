@@ -2,14 +2,12 @@
 
 <!--always update PDF after editing-->
 
-
 **Teammitglieder**:
 
 * Christopher Christensen
 * Valentin Bürgler
 * Lukas Arnold
 * Melvin Werthmüller
-
 
 // TODO Update this list
 
@@ -27,9 +25,6 @@
 | 2.3  | 10.11.17 | Melvin Werthmüller      | Content organisation                           | done   |
 | 2.4  | 10.11.17 | Melvin Werthmüller      | LoggerServer specs updated                     | done   |
 | 2.5  | 10.11.17 | Christopher Christensen | einige TODOs erledigt                          | done   |
-
-
-
 
 ****
 
@@ -62,11 +57,6 @@ In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode
 
 ### 1.4 Ablauf auf dem Server
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
-
-
-
-
-
 
 ****
 
@@ -114,10 +104,10 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 ### 3.1 Externe Schnittstellen
 Die folgenden Schnittstellen wurden uns vorgeschrieben.
 
-*	`Logger`
-*	`LoggerSetup`
-*	`LogLevel`
-*	`StringPersistor`
+* `Logger`
+* `LoggerSetup`
+* `LogLevel`
+* `StringPersistor`
 
 #### Logger
 // TODO luki (erklärung der Logger schnittstelle ohni konkrete implementation)
@@ -150,11 +140,11 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 
-*	`LogMessage`
-*	`WriteAdapter`
-*	`client.properties`
-* 	`server.properties`
-*	TCP/IP Schnittstelle
+* `LogMessage`
+* `WriteAdapter`
+* `client.properties`
+*  `server.properties`
+* TCP/IP Schnittstelle
 
 #### LogMessage
 Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
@@ -189,9 +179,6 @@ TODO luki wie & wo wird diese verwendet
 Der Logger beinhaltet die Funktion `log`, welche eine `LogMessage` an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
 Die Übertrag der Meldungen geschieht über den `ObjectInputStream` / `ObjectOutputStream`, welche die serialisierbare Klasse `LogMessage` als Objekte überträgt.
-
-
-
 
 ****
 
@@ -269,12 +256,6 @@ String message = logMessage.getReceivedAt() + ";"
 + logMessage.getMessage();
 ```
 
-
-
-
-
-
-
 ****
 
 ## 5 Verwendung des Loggers
@@ -319,9 +300,6 @@ Die `LogLevels` finden folgende Verwendung:
 | `ERROR`    | Fehler, von welchen das System sich wieder erholen kann, wie z.B. Fehler beim Laden/Speichern einer Shape. |
 | `CRITICAL` | Fehler, von welchen das System sich nicht erholen kann und beendet werden muss, z.B. bei einer InterruptedException |
 
-
-
-
 ****
 
 ## 6 Testing
@@ -347,11 +325,6 @@ Für den Integrationstest der Einbindung in die GameOfLife Applikation wird gepr
 
 #### LoggerComponent & LoggerServer
 Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogWriterAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > LogWriterAdapter).
-
-
-
-
-
 
 ****
 
