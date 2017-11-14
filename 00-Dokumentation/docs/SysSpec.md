@@ -130,17 +130,20 @@ geht von einem Standard-Wert aus, welcher in der Implementierung festgelegt werd
 > Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### LogLevel
-// TODO luki (erklärung weshabl es diese zentrale loglevels gibt und was logLevels sind) 
+| LogLevel   | Code |
+| ---------- | ---- |
+| `DEBUG`    | 10   |
+| `INFO`     | 20   |
+| `WARN`     | 30   |
+| `ERROR`    | 40   |
+| `CRITICAL` | 50   |
 
-| LogLevel   |
-| ---------- |
-| `DEBUG`    |
-| `INFO`     |
-| `WARN`     |
-| `ERROR`    |
-| `CRITICAL` |
+In der LoggerInterface-Komponente sind ebenfalls die verschiedenen `LogLevel` definiert. 
+Diese Definition wurde über eine Java-Enum gelöst. Damit die `LogLovel` untereinander 
+verglichen werden können ist jedem Level noch einen Code zugeordnet. Je höher der Code
+ist, desto schlimmer ist eine Nachricht einzustufen.
 
-> Verwendete Version: TODO luki
+> Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### StringPersistor
 
