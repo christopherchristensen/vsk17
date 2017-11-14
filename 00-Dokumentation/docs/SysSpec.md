@@ -110,14 +110,24 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 * `StringPersistor`
 
 #### Logger
-// TODO luki (erklärung der Logger schnittstelle ohni konkrete implementation)
+<img src="img/LoggerInterface.png" width=300>
 
-> Verwendete Version: TODO luki
+Das `Logger`-Interface stellt 3 Methoden zur Verfügung. Die Methode `setReportLevel` ist dazu da, 
+um einzustellen ab welchem LogLevel die Nachrichten an den Server gesendet werden. Zusätzlich wird 
+die Methode `log` definiert, für welche eine Überladung existiert. Mit der einen Variante lässt sich 
+einen Nachricht als `String` loggen und mit der anderen eine Objekt vom Typ `Throwable`. 
+
+> Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### LoggerSetup
-// TODO luki (erklärung der LoggerSetup schnittstelle ohne konkrete implementation)
+<img src="img/LoggerSetup.png" width=300>
 
-> Verwendete Version: TODO luki
+Das `LoggerSetup`-Interface stellt zwei Möglichkeiten zur Verfügung um einen Logger zu erstellen. 
+Bei beiden Varianten muss eine Adresse als `String` und eine Port-Nummer als `Integer` übergeben werden. 
+Als drittes kann bei einer Variante noch einen Namen für den Logger übergeben werden. Die andere Variante 
+geht von einem Standard-Wert aus, welcher in der Implementierung festgelegt werden kann.
+
+> Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### LogLevel
 // TODO luki (erklärung weshabl es diese zentrale loglevels gibt und was logLevels sind) 
