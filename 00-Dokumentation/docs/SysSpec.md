@@ -177,10 +177,21 @@ Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um 
 
 
 #### client.properties
-TODO Beschreibung Luki
+| Schlüssel | Standard-Wert                                 |
+| --------- | --------------------------------------------- |
+| fqn       | ch.hslu.vsk.g01.loggercomponent.LoggerFactory |
+| server    | 127.0.0.1                                     |
+| port      | 54321                                         |
+| name      | Unnamed                                       |
 
-Verwendung:
-TODO luki wie & wo wird diese verwendet
+Das File `client.properties` ist dazu da, um im Game den Logger zu konfigurieren. Bei Starten des Games 
+wird im gleichen Ordner nach dieser Datei gesucht und die Werte eingelesen. Falls die Konfigurationsdatei 
+nicht existiert oder fehlerhaft ist, werden die oben definierten Standard-Werte verwendet. 
+
+Mit dem Schlüssel `fqn` kann definert werden, welche Klasse im Classpath das `LoggerSetup`-Interface 
+implementiert und somit instanziert werden soll. Über die beiden Schlüssel `server` und `port` wird
+dann festgelegt auf welche Adresse und auf welchen Port sich der LoggerServer befindet. Schlussendlich
+kann mit dem Schlüssel `name` noch der Name des Loggers festgelegt werden. 
 
 #### server.properties
 TODO Beschreibung Luki
