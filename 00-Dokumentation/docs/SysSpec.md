@@ -39,10 +39,17 @@
 <!--![](img/base-system-overview.png)-->
 <img src="img/base-system-overview.png" width=400>
 
-Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu. 
+Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. 
+
+Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.
+
+Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.
+
+Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu. 
 
 ### 1.2 Vollständige Systemübersicht
-Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
+Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
+
 <!--![](img/VSK_UML.png)-->
 <img src="img/VSK_UML.png" width=500>
 
@@ -75,7 +82,9 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 // TODO Melvin & Vali (erstellen und einfügem des kompletten klassendiagrams)
 
 ### 2.2 Entwurfsentscheide
-Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).#### Strategie-Pattern
+Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
+
+#### Strategie-Pattern
 // TODO vali (nur Strategie Pattern beschreiben, nicht Factory etc. zusammen. Und wo dieses verwendet wird in unserem Projket)
 
 > Strategie-Pattern ist ein Verhaltensmuster
@@ -95,14 +104,8 @@ Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in e
 
 Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, verwenden wir das Adapter-Modell. So kann die Implementation der `StringPersistor`-Klasse ungeändert bleiben und wir können eine angepasste Implementation für den `LogHandler` erstellen. Dadurch erhalten wir die effektiv gewünschte Zielschnittstelle.
 
-#### Konfigurationsdatei
-// TODO luki (prinzip von konfigurationsdateien erklären und wo dieses verwendet wird in unserem Projken)
-
-
-
-
-
-
+#### Konfigurationsdateien
+Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhes File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
 
 ****
 
@@ -111,7 +114,10 @@ Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, v
 ### 3.1 Externe Schnittstellen
 Die folgenden Schnittstellen wurden uns vorgeschrieben.
 
-*	`Logger`*	`LoggerSetup`*	`LogLevel`*	`StringPersistor`
+*	`Logger`
+*	`LoggerSetup`
+*	`LogLevel`
+*	`StringPersistor`
 
 #### Logger
 // TODO luki (erklärung der Logger schnittstelle ohni konkrete implementation)
@@ -143,9 +149,12 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 
 ### 3.2 Interne Schnittstellen
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
-*	`LogMessage`
-*	`WriteAdapter`*	`client.properties`
-* 	`server.properties`*	TCP/IP Schnittstelle
+
+*	`LogMessage`
+*	`WriteAdapter`
+*	`client.properties`
+* 	`server.properties`
+*	TCP/IP Schnittstelle
 
 #### LogMessage
 Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
@@ -163,7 +172,8 @@ Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und
 
 Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
 
-#### client.properties
+
+#### client.properties
 TODO Beschreibung Luki
 
 Verwendung:
