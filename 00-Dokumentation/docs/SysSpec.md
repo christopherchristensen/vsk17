@@ -25,6 +25,7 @@
 | 2.3  | 10.11.17 | Melvin Werthmüller      | Content organisation                           | done   |
 | 2.4  | 10.11.17 | Melvin Werthmüller      | LoggerServer specs updated                     | done   |
 | 2.5  | 10.11.17 | Christopher Christensen | einige TODOs erledigt                          | done   |
+| 2.6  | 15.11.17 | Lukas Arnold            | Erklärungen zu diversen Punkten erweitert      | done   |
 
 ****
 
@@ -146,7 +147,7 @@ ist, desto schlimmer ist eine Nachricht einzustufen.
 > Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### StringPersistor
-
+// TODO James (Schnittstelle definieren und Verwendung erklären)
 
 > Verwendete Version: 1.0.0 (ch.hslu.vsk.g01.stringpersistor)
 
