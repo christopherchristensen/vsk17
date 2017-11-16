@@ -76,19 +76,16 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
 
 #### Strategie-Pattern
-// TODO vali (nur Strategie Pattern beschreiben, nicht Factory etc. zusammen. Und wo dieses verwendet wird in unserem Projket)
-
-> Strategie-Pattern ist ein Verhaltensmuster
+Bei der Einbindung der Logger-Komponente im Spiel wurde das Strategie-Verhaltensmuster wie folgt eingesetzt:
+Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich eingefügte Klasse `Logger`. Die Strategie ist vom Interface-Typ `Logger` und wird in der Instanz-Variabel `instance` vom Kontext gehalten. Dies ermöglicht es, die Strategie mit einer anderen Logger-Komponente auszutauschen.
 
 #### Singleton-Pattern
-// TODO vali (singeltonprinzip erklären und wo dieses verwendet wird in unserem Projket)
-
-> Strategie-Pattern ist ein Erzeugungsmuster
+Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse `Logger`. Dieses hält ein privates, statisches Attribut «instance». Die Erzeugung wird in der statischen `start`-Methode des Singletons definiert und findet ein einziges Mal, nämlich bei der Initialisierung der Logger-Komponente durch das Spiel statt. Der globale Zugriff auf diese Instanz-Variabel wird über das Singleton geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
-// TODO vali (fabrikprinzip erklären und wo dieses verwendet wird in unserem Projket)
-
-> Strategie-Pattern ist ein Erzeugungsmuster
+Bei der Erzeugung des `Logger`-Objektes, die vom Spiel verwendet wird, kommt die Fabrikmethode als Erzeugungsmuster zum Einsatz: 
+Das Produkt ist vom Interface-Typ `Logger`. Der Erzeuger vom Interface-Typ `LoggerSetup` deklariert die Fabrikmethode `getLoggerSetup`, um ein solches Produkt zu erzeugen. Das konkrete Produkt `BaseLogger` implementiert die Produkt-Schnittstelle (`Logger`-Interface). Der konkrete Erzeuger `LoggerFactory` überschreibt die Fabrikmethode `getLoggerSetup`, um das konkrete Produkt, also den `BaseLogger` zu erzeugen.
 
 #### Adapter-Pattern
 Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung zu gewährleisten.
