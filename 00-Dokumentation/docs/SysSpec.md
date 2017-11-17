@@ -28,6 +28,7 @@
 | 2.6  | 15.11.17 | Lukas Arnold            | Erklärungen zu diversen Punkten erweitert      | done   |
 | 2.7  | 16.11.17 | Valentin Bürgler        | Patterns beschrieben                           | done   |
 | 2.8  | 17.11.17 | Valentin Bürgler        | UMLs zu Patterns eingefügt                     | pending |
+| 2.9  | 17.11.17 | Valentin Bürgler        | Überarbeitung aller Referenzen auf Singleton   | pending |
 
 ****
 
@@ -56,7 +57,7 @@ Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Kom
 ****
 
 ### 1.3 Ablauf auf dem Client
-In der Applikation instanziiert ein `Logger`-Singleton über die `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung. Dieses `Logger`-Objekt bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+In der Applikation instanziiert das Singleton `MessageLogger` über seinen Konstruktor mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese über seine `getInstance`-Methode zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
 ### 1.4 Ablauf auf dem Server
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
@@ -85,10 +86,10 @@ Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich ei
 
 #### Singleton-Pattern
 Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
-Das Singleton ist die im Spiel-Package hinzugefügte Klasse `Logger`. Dieses hält ein privates, statisches Attribut «instance». Die Erzeugung wird in der statischen `start`-Methode des Singletons definiert und findet ein einziges Mal, nämlich bei der Initialisierung der Logger-Komponente durch das Spiel statt. Der globale Zugriff auf diese Instanz-Variabel wird über das Singleton geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Die Erzeugung wird im statischen Konstruktor des Singletons definiert und findet ein einziges Mal, nämlich bei der erstmaligen Verwendung der Logger-Komponente durch das Spiel statt. Der globale Zugriff auf diese Instanz-Variabel wird über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
-Bei der Erzeugung des `Logger`-Objektes, die vom Spiel verwendet wird, kommt die Fabrikmethode als Erzeugungsmuster zum Einsatz: 
+Bei der Erzeugung der `Logger`-Implementation, die vom Spiel verwendet wird, kommt die Fabrikmethode als Erzeugungsmuster zum Einsatz: 
 Das Produkt ist vom Interface-Typ `Logger`. Der Erzeuger vom Interface-Typ `LoggerSetup` deklariert die Fabrikmethode `getLoggerSetup`, um ein solches Produkt zu erzeugen. Das konkrete Produkt `BaseLogger` implementiert die Produkt-Schnittstelle (`Logger`-Interface). Der konkrete Erzeuger `LoggerFactory` überschreibt die Fabrikmethode `getLoggerSetup`, um das konkrete Produkt, also den `BaseLogger` zu erzeugen.
 
 #### Adapter-Pattern
@@ -114,7 +115,7 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 #### Logger
 <img src="img/LoggerInterface.png" width=300>
 
-Das `Logger`-Interface stellt 3 Methoden zur Verfügung. Die Methode `setReportLevel` ist dazu da, 
+Das `Logger`-Interface stellt drei Methoden zur Verfügung. Die Methode `setReportLevel` ist dazu da, 
 um einzustellen ab welchem LogLevel die Nachrichten an den Server gesendet werden. Zusätzlich wird 
 die Methode `log` definiert, für welche eine Überladung existiert. Mit der einen Variante lässt sich 
 einen Nachricht als `String` loggen und mit der anderen eine Objekt vom Typ `Throwable`. 
@@ -317,15 +318,15 @@ try {
 ```
 
 ### 5.2 GameOfLife Einbindung
-Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das `Logger`-Singleton. Um den Logger in Betrieb zu nehmen, wird über die statische `start`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung instanziiert. 
-Dafür wird die Konfigurationsdatei `config.properties` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Komponente austauschen.
+Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das `MessageLogger`-Singleton. Um den Logger in Betrieb zu nehmen wird einmalig über dessen Konstruktor mit der `LoggerFactory` eine spezifische Logger-Implementierung instanziiert. 
+Für die Instanziierung wird die Konfigurationsdatei `config.properties` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Implementierung austauschen.
 Zur Veranschaulichung folgt der mögliche Inhalt von `config.properties`:
 ```
 fqn=ch.hslu.vsk.g01.loggercomponent.LoggerFactory
 server=127.0.0.1
 port=54321
 ```
-Danach kann der Logger dazu verwendet werden, mit der statischen `log` Methode ein `LogLevel` und entweder ein `String` oder `Throwable` loggen.
+Danach kann die Applikation dann mit der statischen Methode `getInstance` des Singletons auf die Logger-Implementierung zugreifen. Mit dessen statischer `log` Methode lässt sich nun auf einem `LogLevel` entweder ein `String` oder `Throwable` loggen.
 
 Die Applikation wurden ausserdem um Aufrufe dieser `log` Methode mit entsprechenden LogLevels erweitert.
 Die `LogLevels` finden folgende Verwendung:
