@@ -27,8 +27,8 @@
 | 2.5  | 10.11.17 | Christopher Christensen | einige TODOs erledigt                          | done   |
 | 2.6  | 15.11.17 | Lukas Arnold            | Erklärungen zu diversen Punkten erweitert      | done   |
 | 2.7  | 16.11.17 | Valentin Bürgler        | Patterns beschrieben                           | done   |
-| 2.8  | 17.11.17 | Valentin Bürgler        | UMLs zu Patterns eingefügt                     | pending |
-| 2.9  | 17.11.17 | Valentin Bürgler        | Überarbeitung aller Referenzen auf Singleton   | pending |
+| 2.8  | 17.11.17 | Valentin Bürgler        | UMLs zu Patterns eingefügt                     | done   |
+| 2.9  | 17.11.17 | Valentin Bürgler        | Überarbeitung aller Referenzen auf Singleton   | done   |
 
 ****
 
@@ -85,6 +85,8 @@ Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente du
 Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Die Erzeugung wird im statischen Konstruktor des Singletons definiert und findet ein einziges Mal, nämlich bei der erstmaligen Verwendung der Logger-Komponente durch das Spiel statt. Der globale Zugriff auf diese Instanz-Variabel wird über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
+<img src="img/FactoryPattern.png">
+
 Bei der Erzeugung der `Logger`-Implementation, die vom Spiel verwendet wird, kommt die Fabrikmethode als Erzeugungsmuster zum Einsatz: 
 Das Produkt ist vom Interface-Typ `Logger`. Der Erzeuger vom Interface-Typ `LoggerSetup` deklariert die Fabrikmethode `getLoggerSetup`, um ein solches Produkt zu erzeugen. Das konkrete Produkt `BaseLogger` implementiert die Produkt-Schnittstelle (`Logger`-Interface). Der konkrete Erzeuger `LoggerFactory` überschreibt die Fabrikmethode `getLoggerSetup`, um das konkrete Produkt, also den `BaseLogger` zu erzeugen.
 
