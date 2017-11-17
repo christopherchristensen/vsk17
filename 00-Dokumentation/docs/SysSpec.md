@@ -27,6 +27,7 @@
 | 2.5  | 10.11.17 | Christopher Christensen | einige TODOs erledigt                          | done   |
 | 2.6  | 15.11.17 | Lukas Arnold            | Erklärungen zu diversen Punkten erweitert      | done   |
 | 2.7  | 16.11.17 | Valentin Bürgler        | Patterns beschrieben                           | done   |
+| 2.8  | 17.11.17 | Valentin Bürgler        | UMLs zu Patterns eingefügt                     | pending |
 
 ****
 
@@ -77,6 +78,7 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
 
 #### Strategie-Pattern
+<img src="img/StrategyPattern.png">
 Bei der Einbindung der Logger-Komponente im Spiel wurde das Strategie-Verhaltensmuster wie folgt eingesetzt:
 Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich eingefügte Klasse `Logger`. Die Strategie ist vom Interface-Typ `Logger` und wird in der Instanz-Variabel `instance` vom Kontext gehalten. Dies ermöglicht es, die Strategie mit einer anderen Logger-Komponente auszutauschen.
 
