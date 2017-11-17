@@ -57,7 +57,7 @@ Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Kom
 ****
 
 ### 1.3 Ablauf auf dem Client
-In der Applikation instanziiert das Singleton `MessageLogger` über seinen Konstruktor mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese über seine `getInstance`-Methode zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+In der Applikation instanziiert das Singleton `MessageLogger` einmalig über seine statische `getInstance`-Methode mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese dann zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
 ### 1.4 Ablauf auf dem Server
 Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
@@ -82,7 +82,7 @@ Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinz
 <img src="img/SingletonPattern.png">
 
 Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
-Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Die Erzeugung wird im statischen Konstruktor des Singletons definiert und findet ein einziges Mal, nämlich bei der erstmaligen Verwendung der Logger-Komponente durch das Spiel statt. Der globale Zugriff auf diese Instanz-Variabel wird über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
 <img src="img/FactoryPattern.png">
@@ -322,8 +322,7 @@ try {
 ```
 
 ### 5.2 GameOfLife Einbindung
-Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das `MessageLogger`-Singleton. Um den Logger in Betrieb zu nehmen wird einmalig über dessen Konstruktor mit der `LoggerFactory` eine spezifische Logger-Implementierung instanziiert. 
-Für die Instanziierung wird die Konfigurationsdatei `config.properties` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Implementierung austauschen.
+Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das `MessageLogger`-Singleton. Um den Logger in Betrieb zu nehmen wird einmalig über dessen `getInstance`-Methode mit der `LoggerFactory` eine spezifische Logger-Implementierung instanziiert. Für die Instanziierung wird die Konfigurationsdatei `config.properties` eingelesen, worin sich der "Fully Qualified Class Name" der `LoggerFactory`, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Implementierung austauschen.
 Zur Veranschaulichung folgt der mögliche Inhalt von `config.properties`:
 ```
 fqn=ch.hslu.vsk.g01.loggercomponent.LoggerFactory
