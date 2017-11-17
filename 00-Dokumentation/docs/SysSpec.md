@@ -79,6 +79,7 @@ Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinz
 
 #### Strategie-Pattern
 <img src="img/StrategyPattern.png">
+
 Bei der Einbindung der Logger-Komponente im Spiel wurde das Strategie-Verhaltensmuster wie folgt eingesetzt:
 Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich eingefügte Klasse `Logger`. Die Strategie ist vom Interface-Typ `Logger` und wird in der Instanz-Variabel `instance` vom Kontext gehalten. Dies ermöglicht es, die Strategie mit einer anderen Logger-Komponente auszutauschen.
 
