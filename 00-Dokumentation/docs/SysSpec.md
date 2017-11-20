@@ -9,10 +9,10 @@
 * Lukas Arnold
 * Melvin Werthmüller
 
-// TODO Update this list
+**Versionsverlauf**:
 
 | Rev. | Datum    | Autor                   | Bemerkungen                                    | Status |
-|:-----|:---------|:-----------------------:|:-----------------------------------------------|:-------|
+|:-----|:---------|:------------------------|:-----------------------------------------------|:-------|
 | 1.1  | 24.10.17 | Valentin Bürgler        | Erster Entwurf                                 | done   |
 | 1.2  | 31.10.17 | Christopher Christensen | Erweiterung Kap.1/2                            | done   |
 | 1.3  | 01.11.17 | Valentin Bürgler        | Bearbeitung Kap.2/4                            | done   |
