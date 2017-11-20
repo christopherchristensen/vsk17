@@ -299,6 +299,15 @@ String message = logMessage.getReceivedAt() + ";"
 + logMessage.getMessage();
 ```
 
+### LoggerViewer
+#### LoggerViewer
+// TODO: beschreiben
+
+#### RMI-Verbindung
+<img src="img/RMI-Connection.png" width=500>
+
+// TODO: beschreiben
+
 ****
 
 ## 5 Verwendung des Loggers
