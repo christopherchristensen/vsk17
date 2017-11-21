@@ -74,7 +74,7 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 <img src="img/Paketdiagramm.png" width=400>
 
 #### Klassendiagramm
-// TODO Melvin & Vali (erstellen und einfügem des kompletten klassendiagrams)
+<img src="img/UMLClassDiagram.png">
 
 ### 2.2 Entwurfsentscheide
 Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
