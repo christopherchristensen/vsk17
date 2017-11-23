@@ -320,7 +320,7 @@ Das Format mit dem die `LogMessage`-Objekte in das `LogFile.txt` geschrieben wer
 3. LogLevel der `LogMessage`
 4. Nachricht in der `LogMessage`
 
-```
+```java
 String message = logMessage.getReceivedAt() + ";" 
 + logMessage.getCreatedAt() + ";" 
 + logMessage.getLogLevel() + ";" 
