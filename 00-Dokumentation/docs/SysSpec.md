@@ -32,6 +32,7 @@
 | 3.0  | 17.11.17 | Lukas Arnold            | Explain LoggerViewer and RMI-Connection        | done   |
 | 3.1  | 22.11.17 | Melvin Werthmüller      | Anpassungen Aufgabenstellung V2 vorbereitet    | done   |
 | 3.2  | 27.11.17 | Melvin Werthmüller      | Anpassungen Beschreibung Logger Client         | done   |
+| 3.3  | 27.11.17 | Lukas Arnold            | gleichzeitige Verbindungen besser erklärt      | done   |
 
 ****
 
