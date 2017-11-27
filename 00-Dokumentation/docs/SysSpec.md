@@ -33,6 +33,7 @@
 | 3.1  | 22.11.17 | Melvin Werthmüller      | Anpassungen Aufgabenstellung V2 vorbereitet    | done   |
 | 3.2  | 27.11.17 | Melvin Werthmüller      | Anpassungen Beschreibung Logger Client         | done   |
 | 3.3  | 27.11.17 | Lukas Arnold            | gleichzeitige Verbindungen besser erklärt      | done   |
+| 3.4  | 27.11.17 | Lukas Arnold            | Systemübersicht aktualisiert                   | done   |
 
 ****
 
@@ -56,7 +57,7 @@ Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu.
 Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
 
 <!--![](img/VSK_UML.png)-->
-<img src="img/VSK_UML.png" width=500>
+<img src="img/VSK_UML.png" width=600>
 
 Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Komponenten detaillierter beschrieben. Auch die Relationen untereinander werden ausführlich aufgezeigt.
 
