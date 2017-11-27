@@ -94,9 +94,7 @@ Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinz
 <img src="img/SingletonPattern.png">
 
 Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
-Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
-
-<span style="color:red">TODO vali: Beschreibung auf Aktualität prüfen</span>
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Die Klassen des Spiels, die etwas loggen sollen, halten diese Instanz in einer hinzugefügten privaten Klassenvariabel. Dadurch kann von überall aus im Spiel auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
 <img src="img/FactoryPattern.png">
