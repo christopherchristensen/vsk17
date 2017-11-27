@@ -9,10 +9,10 @@
 * Lukas Arnold
 * Melvin Werthmüller
 
-// TODO Update this list
+**Versionsverlauf**:
 
 | Rev. | Datum    | Autor                   | Bemerkungen                                    | Status |
-|:-----|:---------|:-----------------------:|:-----------------------------------------------|:-------|
+|:-----|:---------|:------------------------|:-----------------------------------------------|:-------|
 | 1.1  | 24.10.17 | Valentin Bürgler        | Erster Entwurf                                 | done   |
 | 1.2  | 31.10.17 | Christopher Christensen | Erweiterung Kap.1/2                            | done   |
 | 1.3  | 01.11.17 | Valentin Bürgler        | Bearbeitung Kap.2/4                            | done   |
@@ -29,6 +29,10 @@
 | 2.7  | 16.11.17 | Valentin Bürgler        | Patterns beschrieben                           | done   |
 | 2.8  | 17.11.17 | Valentin Bürgler        | UMLs zu Patterns eingefügt                     | done   |
 | 2.9  | 17.11.17 | Valentin Bürgler        | Überarbeitung aller Referenzen auf Singleton   | done   |
+| 3.0  | 17.11.17 | Lukas Arnold            | Explain LoggerViewer and RMI-Connection        | done   |
+| 3.1  | 22.11.17 | Melvin Werthmüller      | Anpassungen Aufgabenstellung V2 vorbereitet    | done   |
+| 3.2  | 27.11.17 | Melvin Werthmüller      | Anpassungen Beschreibung Logger Client         | done   |
+| 3.3  | 27.11.17 | Lukas Arnold            | gleichzeitige Verbindungen besser erklärt      | done   |
 
 ****
 
@@ -36,7 +40,7 @@
 
 ### 1.1 Grobe Systemübersicht
 <!--![](img/base-system-overview.png)-->
-<img src="img/base-system-overview.png" width=400>
+<img src="img/base-system-overview_v2.png" width=400>
 
 Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. 
 
@@ -44,7 +48,9 @@ Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu defini
 
 Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.
 
-Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu. 
+Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu.
+
+<span style="color:red">TODO Grobbeschreibung anpassen und ergänzen</span>
 
 ### 1.2 Vollständige Systemübersicht
 Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
@@ -54,13 +60,15 @@ Das folgende UML soll eine detaillierte Übersicht über das implementierte Syst
 
 Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Komponenten detaillierter beschrieben. Auch die Relationen untereinander werden ausführlich aufgezeigt.
 
+<span style="color:red">TODO Systemübersicht aktualisieren</span>
+
 ****
 
 ### 1.3 Ablauf auf dem Client
-In der Applikation instanziiert das Singleton `MessageLogger` einmalig über seine statische `getInstance`-Methode mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese dann zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+In der Applikation instanziiert das Singleton `MessageLogger` einmalig über seine statische `getInstance`-Methode mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese dann zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken. Falls die Objekte nicht an den Server geschickt werden können, werden diese mit dem `StringPersistor` in ein temporäres TextFile geschriben. Sobald die Verbindung wieder vorhanden ist, werden zuerst die Meldungen aus dem TextFile an den Server geschickt, bevor neue Meldungen übermittelt werden.
 
 ### 1.4 Ablauf auf dem Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für das Empfangen sind dabei mehere `SocketHandler` (Standard-Konfiguration sind 10) zuständig. Jeder dieser `SocketHandler` hält die Verbindung zu einem Client. In der Standard-Konfiguration sind so maximal 10 Clients gleichzeit möglich, welche mit dem gleichen Server kommunizieren. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt und an die `RmiRegistry`-Thread sendet. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. Die `RmiRegistry` sendet die Meldung dann weiter an den RMI-Server, welcher sie an alle angemeldeten Clients verteilt.
 
 ****
 
@@ -73,7 +81,9 @@ Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu v
 <img src="img/Paketdiagramm.png" width=400>
 
 #### Klassendiagramm
-// TODO Melvin & Vali (erstellen und einfügem des kompletten klassendiagrams)
+<img src="img/UMLClassDiagram.png">
+
+<span style="color:red">TODO: aktualisieren</span>
 
 ### 2.2 Entwurfsentscheide
 Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das «Favour Composition over Inheritance»-Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
@@ -83,6 +93,8 @@ Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinz
 
 Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
 Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
+
+<span style="color:red">TODO vali: Beschreibung auf Aktualität prüfen</span>
 
 #### Fabrikmethode-Pattern
 <img src="img/FactoryPattern.png">
@@ -103,6 +115,10 @@ Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, v
 
 #### Konfigurationsdateien
 Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhes File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
+
+#### GoF-Pattern
+<span style="color:red">TODO james: Pattern kurz Beschreibung und unsere Verwendung dafür</span>
+
 
 ****
 
@@ -153,7 +169,7 @@ ist, desto schlimmer ist eine Nachricht einzustufen.
 > Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### StringPersistor
-// TODO James (Schnittstelle definieren und Verwendung erklären)
+<span style="color:red">TODO James (Schnittstelle definieren und Verwendung erklären): </span>
 
 > Verwendete Version: 1.0.0 (ch.hslu.vsk.g01.stringpersistor)
 
@@ -181,6 +197,8 @@ Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabell
 Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und versteht sich somit als Adapter.  Der Adapter definiert das File und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<PersistedString> readLogMessages(int i)` vor. Der übergebene Parameter liefert die gewünschte Anzahl letzter `LogMessage`-Objekten aus dem LogFile zurück.
 
 Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
+
+<span style="color:red">TODO James: neue Ergänzungen Beschreiben (nur grob die Schnittstelle)</span>
 
 
 #### client.properties
@@ -230,10 +248,12 @@ Die Übertrag der Meldungen geschieht über den `ObjectInputStream` / `ObjectOut
 ### LoggerComponent (Client)
 Der Logger besteht hauptsächlich aus der Klasse `BaseLogger`, welcher das `Logger`-Interface implementiert. Er bietet die Methode `log` an, welche mit einem `LogLevel` als erstes Argument und einer Nachricht als String, aufgerufen werden kann um etwas zu loggen. Zusätzlich steht noch eine überladene Methode bereit, welche als zweites Argument ein `Throwable` akzeptiert, was es ermöglicht auch Exceptions zu loggen. 
 
-Durch die Instanzierung eines Loggers wird sofort ein `LoggerSocket` erstellt und gestartet. Er enthält eine Queue mit den Meldungen, welche an den Server gesendet werden sollten. Er bietet ausserdem die Methode `queueLogMessage`, welche asynchron eine `LogMessage` in die Queue speichert. Beim Starten des Sockets wird ein `LogConsumer`-Thread gestartet, welcher ständig die Queue abarbeitet und die enthaltenen Nachrichten via einen `ObjectOutputStream` über einen TCP-Socket an den Server sendet. 
+Durch die Instanzierung eines Loggers wird sofort ein `LoggerSocket` erstellt und gestartet. Er enthält eine Queue mit den Meldungen, welche an den Server gesendet werden sollten. Er bietet ausserdem die Methode `queueLogMessage`, welche asynchron eine `LogMessage` in die Queue speichert. Beim Starten des Sockets wird ein `LogConsumer`-Thread gestartet, welcher ständig die Queue abarbeitet und die enthaltenen Nachrichten via einen `ObjectOutputStream` über einen TCP-Socket an den Server sendet. Falls das Senden zu einer `IOException` Exception führt, werden die Meldungen über den `LogAdapter` und dann dem `StringPersistor` in ein lokales temporäres TextFile geschrieben. Wenn die Verbindung wieder hergestellt ist, wird überprüft, ob es `LogMessages` gibt, welche in dass temporäre TextFile geschrieben wurde. Falls ja werden diese zuerst geschickt. Nachdem alle Meldungen übermittelt wurden, wird das TextFile gelöscht. Erst dann wird mit dem regulären Senden weitergefahren.
+
+Achtung: falls die Verbindung während dem senden der Meldungen aus dem temporären TextFile unterbrochen wird, kann es schlussendlich zu redundanten Meldungen auf dem Server führen.
 
 ### LoggerServer
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Dazu werden beim Starten des Servers mehrere `SocketHandler` erstellt, welche über einen `ExecutorService` als eigenständige Threads gestartet werden. Die Anzahl wird durch den Konfigurationsparameter `amount` im `server.properties` festgelegt. Jeder dieser `SocketHandler` ist für die Kommunikation mit einem Logger-Client zuständig und hat dabei Zugriff auf den ServerSocket, den LogAdapter und die RmiRegistry. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt und die Meldung an die `RmiRegistry` weiterleitet.
 
 #### LoggerServer - Class
 Der LoggerServer besitzt eine `main` Methode, welche für das Starten des Servers verantwortlich ist. Die Klasse bestitz ausserdem drei wichtige lokale Konstanten.
@@ -274,6 +294,9 @@ public void run() {
 ### StringPersistor
 In der StringPersistor-Komponente wird dafür gesorgt, dass die `LogMessage`-Objekte in ein `File` geschrieben werden.
 
+<span style="color:red">TODO James: neue Ergänzungen Beschreiben (detailierter als oben)</span>
+
+
 #### StringPersistor - Class
 Der Stringpersistor schreibt eine Zeitinstanz mit einer Log-Message in ein Log-File. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
 
@@ -292,12 +315,24 @@ Das Format mit dem die `LogMessage`-Objekte in das `LogFile.txt` geschrieben wer
 3. LogLevel der `LogMessage`
 4. Nachricht in der `LogMessage`
 
-```
+```java
 String message = logMessage.getReceivedAt() + ";" 
 + logMessage.getCreatedAt() + ";" 
 + logMessage.getLogLevel() + ";" 
 + logMessage.getMessage();
 ```
+
+### LoggerViewer
+Da keine Anforderunegn an den LoggerViewer existieren, wurde er sehr simpel aufgebaut. Der Viewer besteht aus einem `JFrame`, in welchem sich ein `JScrollPane` und darin eine `JTable`. Die Daten für die Tabelle werden inem einem `DefaultTableModel` abgelegt, welches mit der Tabelle verknüpft wurde. 
+
+#### RMI-Verbindung
+<img src="img/RMI-Connection.png" width=600>
+
+##### LoggerServer
+Während dem Starten des LoggerServer wird ein `RmiRegistry` Objekt erzeugt und über einen Executor-Service gestartet. Sobald die `RmiRegistry` ausgeführt wird, erstellt sie einen `RmiServer` und stellt dieses Objekt über RMI zur Verfügung. Der `RmiServer` bietet dann die Methode `register` an, bei welcher sich ein `LoggerRmiClient` anmelden kann, um über neue LogMessages informiert zu werden. Sobald beim LoggerSever eine neue Nachricht eintrifft, wird dann die `writeLogMessage` Methode auf der `RmiRegistry` aufgerufen. Diese leitet dann den Aufruf an die Methode `writeLogMessage` des `RmiServer`-Objektes weiter. Der `RmiServer` geht dann durch die Liste mit den angemeldeten `LoggerRmiClient` und ruft auf jedem Client die Methode `logMessage` auf. 
+
+##### LoggerViewer
+Zur Kommunikation über RMI wird die Klasse `RmiConnection` als `Runnable` in einem zweiter Thread gestartet. Soabald das `Runnable` gestartet wird, wird ein `ViewerRmiClient`, welcher dann versucht eine Verbindung zum RMI-Server aufzubauen und sich selber als Client zu registrieren. In der Klasse `ViewerRmiClient` ist dann auch die Methode `logMessage` definiert, welche aufgerufen wird, sobald der Server eine neue Nachricht erhält. Diese Methode erstellt dann eine neue Zeile in der LoggerViewer-Tabelle mit der Werten aus der Nachricht und fügt sie ganz oben an der Tabelle an. 
 
 ****
 
@@ -346,6 +381,8 @@ Die `LogLevels` finden folgende Verwendung:
 
 ## 6 Testing
 Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
+
+<span style="color:red">TODO: Testing überarbeiten</span>
 
 ### 6.1 Unit Testing
 
