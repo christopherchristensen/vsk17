@@ -35,6 +35,7 @@
 | 3.3  | 27.11.17 | Lukas Arnold            | gleichzeitige Verbindungen besser erklärt      | done   |
 | 3.4  | 27.11.17 | Lukas Arnold            | Systemübersicht aktualisiert                   | done   |
 | 3.5  | 27.11.17 | Christopher Christensen | Anpassungen StringPersistor/LogFileAdapter     | done   |
+| 3.6  | 28.11.17 | Melvin Werthmüller      | Kapitel zu Diskussionen bezüglich Entscheide   | done   |
 
 ****
 
@@ -113,8 +114,6 @@ Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in e
 
  <br>
 
-
-
 **Akteure**: 
 
 * `LogConsumer` verwendet `LogFileAdapter`
@@ -140,6 +139,41 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 
 <span style="color:blue">James fragt: GoF wird generell (wie oben beschrieben) verwendet. GoF sind doch mehrere verschiedene Patterns, wie z.B. Adapter-Pattern, etc. Was wird hier von mir verlangt?</span>
 
+#### Diskussionen
+
+##### Serialisierung
+* Überlegungen zum Mengengerüst der Datenübertragung
+
+> TODO
+* Konzepte und Konstrukte aus dem Input Synchronisation:	* Messages via TCP/IP übertragen	* Messages speichern	* Messages anzeigen	* Spezialfälle
+
+> In unserem Projekt werden die `LogMessages` serialisiert über die TCP/IP Schnittstelle übertragen. Dies geschieht automatisch mit den Klassen `ObjectInputStream` / `ObjectOutputStream`.
+
+
+##### Message Passing 
+* Wie könnten die im VS_03_MessagePassing vorgestellten Implementationen der Message Passing Protokolle zum Einsatz kommen?	* warum Sie eine der vorgestellten Codeskizzen des Message Passing übernehmen und einsetzen oder	* warum Sie Message Passing in dieser Art nicht einsetzen
+
+> Um die Anforderungen ab zu deken genügt es, ein einzelnes Objekt als Message zu übergeben.
+* Welchen Mehrwert ergibt ein Message Passing Protokoll im Projekt?
+
+> Das Erweitern von unterschiedlichen Nachrichten vereinfacht sich enorm
+* Andere Möglichkeiten wie Sie ein Message Passing Protokoll (in Ihrem Projekt) umsetzen? Welche?
+
+> TODO
+
+##### RMI
+* Wie sieht die proprietäre RMI Schnittstelle aus? Dokumentieren Sie diese!* Wie sieht der RMI Viewer aus? Tipp: Nicht zu aufwendig, eine einfache Anzeige der eingehenden Message (siehe Muss-Features 7) reicht.* Wie funktioniert das Push-Prinzip mit RMI und wie lässt sich dieses implementieren?* Welche Komponenten sind für die RMI Kommunikation notwendig? Welche Einstellungen müssen im Netzwerk gemacht werden (z.B. Firewall)?
+
+##### Uhren Synchronisation
+* Wo könnten logische Uhren zum Einsatz kommen? Begründen Sie in jedem Fall Ihre Antwort,	* warum Sie logische Uhren einsetzen oder	* warum Sie logische Uhren nicht einsetzen
+
+> Unser Projekt setzt logische Uhren nicht ein, da dies keine Anforderung ist.
+* Welchen Mehrwert ergeben die logischen Uhren im Projekt?
+
+> Die Nachvollziehbarkeit der Protokolle ist in allen Fällen gegeben. Jedes System "spricht" von derselben Zeit.
+* Welche logische Uhr (mit Lamport-Zeitstempel oder Vektor-Zeitstempel) ist sinnvoll, bezüglich des Mehrwerts vs. Aufwand?
+
+> TODO
 
 ****
 
