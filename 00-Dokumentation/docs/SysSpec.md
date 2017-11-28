@@ -32,6 +32,9 @@
 | 3.0  | 17.11.17 | Lukas Arnold            | Explain LoggerViewer and RMI-Connection        | done   |
 | 3.1  | 22.11.17 | Melvin Werthmüller      | Anpassungen Aufgabenstellung V2 vorbereitet    | done   |
 | 3.2  | 27.11.17 | Melvin Werthmüller      | Anpassungen Beschreibung Logger Client         | done   |
+| 3.3  | 27.11.17 | Lukas Arnold            | gleichzeitige Verbindungen besser erklärt      | done   |
+| 3.4  | 27.11.17 | Lukas Arnold            | Systemübersicht aktualisiert                   | done   |
+| 3.5  | 27.11.17 | Christopher Christensen | Anpassungen StringPersistor/LogFileAdapter     | done   |
 
 ****
 
@@ -55,7 +58,7 @@ Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu.
 Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
 
 <!--![](img/VSK_UML.png)-->
-<img src="img/VSK_UML.png" width=500>
+<img src="img/VSK_UML.png" width=600>
 
 Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Komponenten detaillierter beschrieben. Auch die Relationen untereinander werden ausführlich aufgezeigt.
 
@@ -67,9 +70,7 @@ Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Kom
 In der Applikation instanziiert das Singleton `MessageLogger` einmalig über seine statische `getInstance`-Methode mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese dann zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken. Falls die Objekte nicht an den Server geschickt werden können, werden diese mit dem `StringPersistor` in ein temporäres TextFile geschriben. Sobald die Verbindung wieder vorhanden ist, werden zuerst die Meldungen aus dem TextFile an den Server geschickt, bevor neue Meldungen übermittelt werden.
 
 ### 1.4 Ablauf auf dem Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert.
-
-<span style="color:red">TODO Luki: Anpassung mit mehreren Verbindungen ergänzen</span>
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für das Empfangen sind dabei mehere `SocketHandler` (Standard-Konfiguration sind 10) zuständig. Jeder dieser `SocketHandler` hält die Verbindung zu einem Client. In der Standard-Konfiguration sind so maximal 10 Clients gleichzeit möglich, welche mit dem gleichen Server kommunizieren. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt und an die `RmiRegistry`-Thread sendet. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. Die `RmiRegistry` sendet die Meldung dann weiter an den RMI-Server, welcher sie an alle angemeldeten Clients verteilt.
 
 ****
 
@@ -93,9 +94,7 @@ Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinz
 <img src="img/SingletonPattern.png">
 
 Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
-Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Dadurch kann in allen Klassen des Spiels auf die Logger-Komponente zugegriffen werden.
-
-<span style="color:red">TODO vali: Beschreibung auf Aktualität prüfen</span>
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Die Klassen des Spiels, die etwas loggen sollen, halten diese Instanz in einer hinzugefügten privaten Klassenvariabel. Dadurch kann von überall aus im Spiel auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
 <img src="img/FactoryPattern.png">
@@ -110,15 +109,36 @@ Bei der Einbindung der Logger-Komponente im Spiel wurde das Strategie-Verhaltens
 Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich eingefügte Klasse `MessageLogger`. Die Strategie ist vom Interface-Typ `Logger` und wird in der Instanz-Variabel `instance` vom Kontext gehalten. Dies ermöglicht es, die Strategie mit einer anderen Logger-Komponente auszutauschen.
 
 #### Adapter-Pattern
-Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung zu gewährleisten.
+Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung gewährleisten.
 
-Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, verwenden wir das Adapter-Modell. So kann die Implementation der `StringPersistor`-Klasse ungeändert bleiben und wir können eine angepasste Implementation für den `LogHandler` erstellen. Dadurch erhalten wir die effektiv gewünschte Zielschnittstelle.
+ <br>
+
+
+
+**Akteure**: 
+
+* `LogConsumer` verwendet `LogFileAdapter`
+* `LogHandler` verwendet `LogFileAdapter`
+* `LogFileAdapter` adaptiert `StringPersistor`
+
+Wir verwenden das Adapter Pattern an zwei Stellen in unserem MessageLogger: 
+
+* Ist der Server vom Client nicht erreichbar, müssen die `LogMessage`-Objekte vorübergehend beim Client gespeichert werden. Der Client macht dies, indem der `LogConsumer` den `LogFileAdapter` verwendet, um die `LogMessage`-Objekte in ein lokales Textfile zu schreiben. Der `LogFileAdapter` adaptiert den `StringPersistor` mit der Methode `void writeLogMessage(LogMessage logMessage)`. Der `StringPersistor` schreibt die Nachrichten dann mit der Methode `void save(Instant timestamp, String payload)` effektiv in das TextFile. Sobald die Verbindung wieder hergestellt wurde nutzt der LogConsumer den `LogFileAdapter` erneut, um mit der Methode `List<LogMessage> readLogMessages()` alle Nachrichten wieder aus dem `File` zu lesen. Hier wird die `StringPersistor`-Methode `List<PersistedString> get(int i)` adaptiert, welche die Nachrichten effektiv aus dem `File` liest.
+
+<img src="img/AdapterPatternLC.png" width="80%">
+
+* Für die Übertragung der `LogMessage` vom `LogHandler` zum `StringPersistor`, verwenden wir ebenfalls das Adapter-Modell (`LogFileAdapter`). So kann die Implementation der `StringPersistor`-Klasse ungeändert bleiben und wir können eine angepasste Implementation für den `LogHandler` erstellen. Dadurch erhalten wir die effektiv gewünschte Zielschnittstelle und die `LogMessage`-Objekte werden wie gewollt auf serverseite in ein `LogMessage`-`File` geschrieben.
+
+<img src="img/AdapterPatternLH.png" width="80%">
 
 #### Konfigurationsdateien
 Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhes File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
 
 #### GoF-Pattern
-<span style="color:red">TODO james: Pattern kurz Beschreibung und unsere Verwendung dafür</span>
+
+<span style="color:red">TODO james: Pattern kurz Beschreibung und unsere Verwendung dafür. </span> 
+
+<span style="color:blue">James fragt: GoF wird generell (wie oben beschrieben) verwendet. GoF sind doch mehrere verschiedene Patterns, wie z.B. Adapter-Pattern, etc. Was wird hier von mir verlangt?</span>
 
 
 ****
@@ -170,7 +190,10 @@ ist, desto schlimmer ist eine Nachricht einzustufen.
 > Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
 #### StringPersistor
-<span style="color:red">TODO James (Schnittstelle definieren und Verwendung erklären): </span>
+
+<img src="img/StringPersistorInterface.png" width="40%">
+
+Das `StringPersistor`-Interface stellt die Methode `void setFile(File file)` zur Verfügung, um das `File` festzulegen, in welches die `LogMessage`-Objekte geschrieben werden. Die Methode `void save(Instant timestamp, String payload)` schreibt die `LogMessage`-Objekte mit einem "timestamp" vom Typ `Instant` in das File. Die Methode `List<PersistedString> get(int count)` holt die gewünschte Anzahl (= `int i`) aus dem `File` und fügt sie in eine `List<PersistedString>`.
 
 > Verwendete Version: 1.0.0 (ch.hslu.vsk.g01.stringpersistor)
 
@@ -194,12 +217,13 @@ Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabell
 | receivedAt | Zeitpunkt des Erhaltens  | Instant |
 
 
-#### WriteAdapter
-Der WriteAdapter stellt die Schnittstelle vom Server zum Stringpersistor her und versteht sich somit als Adapter.  Der Adapter definiert das File und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<PersistedString> readLogMessages(int i)` vor. Der übergebene Parameter liefert die gewünschte Anzahl letzter `LogMessage`-Objekten aus dem LogFile zurück.
+#### LogAdapter
 
-Der Server nutzt diesen Adapter über die Implementation `LogWriterAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben.
+<img src="img/LogAdapter.png" width="40%">
 
-<span style="color:red">TODO James: neue Ergänzungen Beschreiben (nur grob die Schnittstelle)</span>
+Der `LogAdapter` stellt die Schnittstelle vom Server zum `Stringpersistor` her und versteht sich somit als Adapter.  Der Adapter definiert das `File` und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<LogMessage> readLogMessages()` und `void deleteFile()` vor.
+
+Der Server nutzt diesen Adapter über die Implementation `LogFileAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Der `LogConsumer` verwendet ebenfalls diesen Adapter, um bei Verbindungsunterbruch zum Server, die `LogMessage`-Objekte in ein lokales `File` zu schreiben. Nach erneutem Verbindungsaufbau werden diese `LogMessage`-Objekte wieder aus diesem `File` gelesen mit der Methode `List<LogMessage> readLogMessages()`. Die Methode `void deleteFile()` wird dafür verwendet, das nun gelesene `File` zu entfernen.
 
 
 #### client.properties
@@ -254,10 +278,7 @@ Durch die Instanzierung eines Loggers wird sofort ein `LoggerSocket` erstellt un
 Achtung: falls die Verbindung während dem senden der Meldungen aus dem temporären TextFile unterbrochen wird, kann es schlussendlich zu redundanten Meldungen auf dem Server führen.
 
 ### LoggerServer
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt.
-
-<span style="color:red">TODO Luki, Melvin: neue Ergänzungen Beschreiben (mehrere Verbindungen sind möglich durch was?)</span>
-
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Dazu werden beim Starten des Servers mehrere `SocketHandler` erstellt, welche über einen `ExecutorService` als eigenständige Threads gestartet werden. Die Anzahl wird durch den Konfigurationsparameter `amount` im `server.properties` festgelegt. Jeder dieser `SocketHandler` ist für die Kommunikation mit einem Logger-Client zuständig und hat dabei Zugriff auf den ServerSocket, den LogAdapter und die RmiRegistry. Für jede erhaltene Nachricht, wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergiebt und die Meldung an die `RmiRegistry` weiterleitet.
 
 #### LoggerServer - Class
 Der LoggerServer besitzt eine `main` Methode, welche für das Starten des Servers verantwortlich ist. Die Klasse bestitz ausserdem drei wichtige lokale Konstanten.
@@ -266,7 +287,7 @@ Der LoggerServer besitzt eine `main` Methode, welche für das Starten des Server
 
 Dies ist ein ThreadPool, welcher für die einzelnen LogHandler abarbeitet. Genauer handelt es sich um einen `newFixedThreadPool` mit fünf Threads.
 
-* LogWriterAdapter
+* LogFileAdapter
 
 Dies ist die Referenz zum Adapter, welche einmalig erzeugt wird und jedem `LogHandler` zur Verwendung mitgegeben wird. Diest ist die Schnittstelle zum `StringPersistor`.
 
@@ -287,29 +308,26 @@ Die standard Werte sind wie folgt definiert:
 
 
 #### LogHandler - Class
-Der LogHandler wird vom LoggerServer erstellt. Dieser ist für die asynchron Weitergabe an den LogWriterAdapter verantwortlich. Dementsprechend ist die impementierung auch einfach gehalten. Die Run-Methode sieht wie folgt aus:
+Der LogHandler wird vom LoggerServer erstellt. Dieser ist für die asynchron Weitergabe an den `LogFileAdapter` verantwortlich. Dementsprechend ist die impementierung auch einfach gehalten. Die Run-Methode sieht wie folgt aus:
 
 ```java
 public void run() {
-	logWriterAdapter.writeLogMessage(message);
+	logFileAdapter.writeLogMessage(message);
 }
 ```
 
 ### StringPersistor
-In der StringPersistor-Komponente wird dafür gesorgt, dass die `LogMessage`-Objekte in ein `File` geschrieben werden.
-
-<span style="color:red">TODO James: neue Ergänzungen Beschreiben (detailierter als oben)</span>
-
+In der StringPersistor-Komponente wird dafür gesorgt, dass die `LogMessage`-Objekte in ein `File` geschrieben und aus demselben File wieder herausgelesen werden können.
 
 #### StringPersistor - Class
 Der Stringpersistor schreibt eine Zeitinstanz mit einer Log-Message in ein Log-File. Dazu muss der LogHandler im StringPersistor auch das Log-File an den StringPersistor übergeben mit der Methode `void setFile(final File file)`. Mit der Methode `void save(final Instance instance, final String s)` wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode `List<PersistedString> get(int i)` liefert die mit dem Parameter `i` gewünschte Anzahl letzten Log-Einträge als `List` des Typs `PersistedString` aus dem Log-File zurück. 
 
-#### LogWriterAdapter - Class
-Der `LogWriterAdapter` implementiert das Interface `WriteAdapter` und überschreibt die Methoden `writeLogMessage(LogMessage logMessage)` und die Methode `readLogMessages(int i)`. Die Methoden haben dieselbe Funktion, wie die Methoden der `StringPersistor`-Klasse (`save` und `get`), sind jedoch auf den `LogHandler` angepasst.
+#### LogFileAdapter - Class
+Der `LogFileAdapter` implementiert das Interface `LogAdapter` und überschreibt die Methoden `writeLogMessage(LogMessage logMessage)` und die Methode `List<LogMessage> readLogMessages()`. Die Methoden haben dieselbe Funktion, wie die Methoden der `StringPersistor`-Klasse (`save` und `get`), sind jedoch auf den `LogHandler` angepasst und lesen im Gegensatz zum `StringPersistor` **alle** `LogMessage`-Objekte aus dem `File`. Der Rückgabewert der `LogFileAdapter`-Klasse ist `List<LogMessage>`.
 
 #### LogFile.txt
 
-Das `LogFile.txt` ist das Text-Dokument, in welches alle `LogMessage`-Objekte gespeichert werden.Es wird durch den `LogWriterAdapter` erstellt und dem `StringPersistor` übergeben. Danach werden die `LogMessage`-Objekte über den `StringPersistor` mit Hilfe des `LogWriterAdapter` in das `LogFile.txt`.
+Das `LogFile.txt` ist das Text-Dokument, in welches alle `LogMessage`-Objekte gespeichert werden.Es wird durch den `LogFileAdapter` erstellt und dem `StringPersistor` übergeben. Danach werden die `LogMessage`-Objekte über den `StringPersistor` mit Hilfe des `LogFileAdapter` in das `LogFile.txt`.
 
 ##### Format
 Das Format mit dem die `LogMessage`-Objekte in das `LogFile.txt` geschrieben werden sieht folgendermassen aus.
@@ -396,18 +414,28 @@ Zur Verifikation der `LogMessage`-Klasse gibt es einen `LogMessageTest`, welcher
 #### LoggerComponent
 Der `BaseLogger` wird durch den `BaseLoggerTest` überprüft. Damit nicht ständig einen TCP-Socket aufgemacht werden muss, verwendet der der Test die Klasse `FakeBaseLogger`, welche von `BaseLogger` abgeleitet wird. Darin wird vorallem die Methode `createSocket` überschrieben und es wird ein `FakeLoggerSocket` erstellt. Ausserdem bietet die abgeleitete Klasse noch ein paar Getters und andere Methoden zur Überprüfung der Daten. Für die Verifikation der anderen Klassen in diesem Modul werden manuelle Tests verwendet, da das Testen einer TCP-Verbindung nicht so trivial ist. 
 
-#### LogWriterAdapter
-Der `LogWriterAdapter` hat nur die Methode `void writeLogMessage(LogMessage logMessage)` und diese wird anhand eines JUnit-Tests `LogWriterAdapterTest` getestet. Zuerst wird ein `File`, ein `LogWriterAdapter` und eine `LogMessage` instanziiert. Der `LogMessage` wird ein `LogLevel` und eine Message des Typs `String` übergeben. In einem "PreAssert" mit der Methode `assertEquals(Boolean expected, Boolean actual)` wird geprüft, ob das erstellte File leer ist, da es noch keine `LogMessage` enthalten darf. Danach wird mit der Methode `void writeLogMessage(LogMessage logMessage)` die `LogMessage` in das zuvor erstellte `File` geschrieben. Jetzt kommt der "Assert" wo wieder mithilfe der Methode `assertEquals(Boolean expected, Boolean actual)` geprüft wird, ob das Dokument nun **nicht leer** ist. Am Ende wird das erstellte `File` gelöscht mit der `File`-Methode `delete()`. Der `delete()` kann auskommentiert werden, falls man das Format der im `File` gespeicherten `LogMessage` überprüfen möchte.
+#### LogFileAdapter
+Der `LogFileAdapter` hat die Methoden `void writeLogMessage(LogMessage logMessage)`, `List<LogMessage> readLogMessages()` und `deleteFile()`. Diese werden anhand von JUnit-Tests getestet. 
+
+**Test von `void writeLogMessage(LogMessage logMessage)`** <br>
+
+* Zuerst wird ein `File`, ein `LogFileAdapter` und eine `LogMessage` instanziiert. Der `LogMessage` wird ein `LogLevel` und eine Message des Typs `String` übergeben. In einem "PreAssert" mit der Methode `assertEquals(Boolean expected, Boolean actual)` wird geprüft, ob das erstellte File leer ist, da es noch keine `LogMessage` enthalten darf. Danach wird mit der Methode `void writeLogMessage(LogMessage logMessage)` die `LogMessage` in das zuvor erstellte `File` geschrieben. Jetzt kommt der "Assert" wo wieder mithilfe der Methode `assertEquals(Boolean expected, Boolean actual)` geprüft wird, ob das Dokument nun **nicht leer** ist. Am Ende wird das erstellte `File` gelöscht mit der `File`-Methode `deleteFile()`.
+
+**Test von `List<LogMessage> readLogMessages()`** <br>
+
+* Diese Methode wird gleich aufgebaut wie der Test von `writeLogMessage`. Danach wird einfach noch die `readLogMessages()`-Methode ausgeführt und ein Vergleich gemacht, ob die Anzahl `LogMessage`-Objekte in der zurückgegebenen Liste, der ensprechen, die in das `File` geschrieben wurden.
+
+Die Methode `deleteFile()` wird immer am Ende der Tests ausgeführt. Danach kann man überprüfen, ob das `File` tatsächlich gelöscht wurde.
 
 #### StringPersistor
-Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanzieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der LogWriterAdapter getestet (siehe Kapitel Unit Testing > LogWriterAdapter). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
+Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanzieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der `LogFileAdapter` getestet (siehe Kapitel Unit Testing > `LogFileAdapter`). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
 
 ### 6.2 Manual Testing
 #### GameOfLife
 Für den Integrationstest der Einbindung in die GameOfLife Applikation wird geprüft, ob die Datei "LogFile.txt" zur Speicherung der Logs auf dem Dateisystem erstellt wurde. Dazu wird zuerst die `main` Methode des `LoggerServer` gestartet. Dann wird die GameOfLife Applikation gestartet. Weiter wird getestet, ob Log-Einträge in "LogFile.txt" vorhanden sind, denn der Aufruf der `init` Methode sollte bereits zu einem Log-Eintrag auf `LogLevel.INFO` mit der Nachricht "Initializing UI..." führen.
 
 #### LoggerComponent & LoggerServer
-Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogWriterAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > LogWriterAdapter).
+Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogFileAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > `LogFileAdapter`).
 
 ****
 
