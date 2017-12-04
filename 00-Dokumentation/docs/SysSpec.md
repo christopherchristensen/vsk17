@@ -103,11 +103,15 @@ Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Die
 Bei der Erzeugung der `Logger`-Implementation, die vom Spiel verwendet wird, kommt die Fabrikmethode als Erzeugungsmuster zum Einsatz: 
 Das Produkt ist vom Interface-Typ `Logger`. Der Erzeuger vom Interface-Typ `LoggerSetup` deklariert die Fabrikmethode `getLoggerSetup`, um ein solches Produkt zu erzeugen. Das konkrete Produkt `BaseLogger` implementiert die Produkt-Schnittstelle (`Logger`-Interface). Der konkrete Erzeuger `LoggerFactory` überschreibt die Fabrikmethode `getLoggerSetup`, um das konkrete Produkt, also den `BaseLogger` zu erzeugen.
 
-#### Strategie-Pattern
+#### Strategie-Pattern 1
 <img src="img/StrategyPattern.png">
 
 Bei der Einbindung der Logger-Komponente im Spiel wurde das Strategie-Verhaltensmuster wie folgt eingesetzt:
 Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich eingefügte Klasse `MessageLogger`. Die Strategie ist vom Interface-Typ `Logger` und wird in der Instanz-Variabel `instance` vom Kontext gehalten. Dies ermöglicht es, die Strategie mit einer anderen Logger-Komponente auszutauschen.
+
+#### Strategie-Pattern 2
+
+Das Strategie-Pattern wurde ebenfalls <!-- TODO james-->
 
 #### Adapter-Pattern
 Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung gewährleisten.
@@ -133,11 +137,6 @@ Wir verwenden das Adapter Pattern an zwei Stellen in unserem MessageLogger:
 #### Konfigurationsdateien
 Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhes File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
 
-#### GoF-Pattern
-
-<span style="color:red">TODO james: Pattern kurz Beschreibung und unsere Verwendung dafür. </span> 
-
-<span style="color:blue">James fragt: GoF wird generell (wie oben beschrieben) verwendet. GoF sind doch mehrere verschiedene Patterns, wie z.B. Adapter-Pattern, etc. Was wird hier von mir verlangt?</span>
 
 #### Diskussionen
 
