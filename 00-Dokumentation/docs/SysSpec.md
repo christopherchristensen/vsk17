@@ -111,7 +111,32 @@ Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich ei
 
 #### Strategie-Pattern 2
 
-Das Strategie-Pattern wurde ebenfalls <!-- TODO james-->
+<img src="img/LogConverterStrategy.png">
+
+Das Strategie-Pattern wurde ebenfalls verwendet, um die `LogMessage`-Objekte in verschiedenen String-Formaten abspeichern zu können. Der `LogFileAdapter` verwendet das `LogSemicolonConverterStrategy`-Interface, welches das `LogConverterStrategy` implementiert. Im folgenden Code-Abschnitt sieht man den Konstruktor der Klasse `LogFileAdapter`, welche auch das Attribut `private LogConverterStrategy strategy` besitzt. 
+
+```java
+public LogFileAdapter(String filename) throws ClassNotFoundException, 
+IllegalAccessException, InstantiationException {
+        
+        Class persistor = Class.forName("ch.hslu.vsk.g01.stringpersistor.StringPersistor");
+        this.stringPersistor = (StringPersistor) persistor.newInstance();
+
+        this.file = new File(filename);
+        this.stringPersistor.setFile(this.file);
+        
+        this.strategy = new LogSemicolonConverterStrategy();
+        
+    }
+
+```
+
+Anstelle der `LogSemicolonConverterStrategy`-Klasse könnte der `LogFileAdapter` die Klasse `LogSlashConverterStrategy` verwenden, welches ebenfalls das Interface `LogConverterStrategy` implementiert. Dies würde man dann nur im Konstruktor des `LogFileAdapter` ändern.
+
+```java 
+this.strategy = new LogSlashSemicolonConverterStrategy();
+```
+
 
 #### Adapter-Pattern
 Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung gewährleisten.
@@ -234,7 +259,8 @@ Das `StringPersistor`-Interface stellt die Methode `void setFile(File file)` zur
 Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 
 * `LogMessage`
-* `WriteAdapter`
+* `LogAdapter`
+* `LogConverterStrategy`
 * `client.properties`
 *  `server.properties`
 * TCP/IP Schnittstelle
@@ -257,6 +283,17 @@ Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabell
 Der `LogAdapter` stellt die Schnittstelle vom Server zum `Stringpersistor` her und versteht sich somit als Adapter.  Der Adapter definiert das `File` und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<LogMessage> readLogMessages()` und `void deleteFile()` vor.
 
 Der Server nutzt diesen Adapter über die Implementation `LogFileAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Der `LogConsumer` verwendet ebenfalls diesen Adapter, um bei Verbindungsunterbruch zum Server, die `LogMessage`-Objekte in ein lokales `File` zu schreiben. Nach erneutem Verbindungsaufbau werden diese `LogMessage`-Objekte wieder aus diesem `File` gelesen mit der Methode `List<LogMessage> readLogMessages()`. Die Methode `void deleteFile()` wird dafür verwendet, das nun gelesene `File` zu entfernen.
+
+#### LogConverterStrategy
+
+<img src="img/LogConverterStrategy-Klasse.png">
+
+Der `LogConverterStrategy` stellt die beiden Methoden 
+
+* `public String logMessageToString(LogMessage message)`
+* `public LogMessage getLogMessageFromString(String message)` 
+
+zur Verfügung. Damit kann eine Komponente `LogMessage`-Objekte in ein File schreiben, ohne dass er sich darum kümmern muss, wie die Nachricht in das File gespeichert wird. Es erfüllt die Kriterien des Strategy-Patterns.
 
 
 #### client.properties
@@ -462,6 +499,9 @@ Die Methode `deleteFile()` wird immer am Ende der Tests ausgeführt. Danach kann
 
 #### StringPersistor
 Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanzieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der `LogFileAdapter` getestet (siehe Kapitel Unit Testing > `LogFileAdapter`). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
+
+#### LogConverterStrategy
+Die Implementationen von `LogConverterStrategy` (`LogSemicolonConverterStrategy`, `LogSlashConverterStrategy`) werden ebenfalls anhand von JUnit-Tests getestet. Wobei jeweils getested wird, dass die `LogMessage`-Objekte korrekt konvertiert werden und andererseits, dass die Strings korrekt als `LogMessage` zurückgegeben werden.
 
 ### 6.2 Manual Testing
 #### GameOfLife
