@@ -36,6 +36,7 @@
 | 3.4  | 27.11.17 | Lukas Arnold            | Systemübersicht aktualisiert                   | done   |
 | 3.5  | 27.11.17 | Christopher Christensen | Anpassungen StringPersistor/LogFileAdapter     | done   |
 | 3.6  | 28.11.17 | Melvin Werthmüller      | Kapitel zu Diskussionen bezüglich Entscheide   | done   |
+| 3.7  | 04.12.17 | Christopher Christensen | LogConverterStrategy zur Doku hinzugefügt     | done   |
 
 ****
 
