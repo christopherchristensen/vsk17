@@ -1,0 +1,11 @@
+Release Note:
+
+Produktmanagement Plan	V0.9
+Systemspezifikation	V1.6
+LoggerInterface	V1.2
+LoggerComponent	V1.0
+LoggerServer	V1.0
+LoggerCommon	V1.0
+StringPersistorFile	V1.0
+GameOfLife	V1.0
+LoggerViewer V1.0
