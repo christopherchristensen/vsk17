@@ -1,11 +1,18 @@
 Release Note:
 
-Produktmanagement Plan	V0.9
-Systemspezifikation	V1.6
-LoggerInterface	V1.2
-LoggerComponent	V1.0
-LoggerServer	V1.0
-LoggerCommon	V1.0
-StringPersistorFile	V1.0
-GameOfLife	V1.0
-LoggerViewer V1.0
+Client:
+- GameOfLife	V1.0 (game.jar)
+- LoggerInterface	V1.2 (loggerinterface.jar)
+- LoggerComponent	V1.0 (loggercomponent.jar)
+
+Server:
+- LoggerServer	V1.0 (loggerserver.jar)
+- LoggerViewer	V1.0 (loggerviewer.jar)
+
+Client & Server:
+- LoggerCommon	V1.0 (loggercommon.jar)
+- StringPersistorFile	V1.0 (stringpersistor-api.jar / stringpersistor.jar)
+
+Organisation:
+- Produktmanagement Plan	V0.9
+- Systemspezifikation	V1.6
