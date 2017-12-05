@@ -36,14 +36,14 @@
 | 3.4  | 27.11.17 | Lukas Arnold            | Systemübersicht aktualisiert                   | done   |
 | 3.5  | 27.11.17 | Christopher Christensen | Anpassungen StringPersistor/LogFileAdapter     | done   |
 | 3.6  | 28.11.17 | Melvin Werthmüller      | Kapitel zu Diskussionen bezüglich Entscheide   | done   |
-| 3.7  | 04.12.17 | Christopher Christensen | LogConverterStrategy zur Doku hinzugefügt     | done   |
+| 3.7  | 04.12.17 | Christopher Christensen | LogConverterStrategy zur Doku hinzugefügt      | done   |
+| 3.8  | 05.12.17 | Lukas Arnold            | Remove comments and fix wrong version number   | done   |
 
 ****
 
 ## 1 Systemübersicht
 
 ### 1.1 Grobe Systemübersicht
-<!--![](img/base-system-overview.png)-->
 <img src="img/base-system-overview_v2.png" width=400>
 
 Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. 
@@ -59,7 +59,6 @@ Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu.
 ### 1.2 Vollständige Systemübersicht
 Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
 
-<!--![](img/VSK_UML.png)-->
 <img src="img/VSK_UML.png" width=600>
 
 Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Komponenten detaillierter beschrieben. Auch die Relationen untereinander werden ausführlich aufgezeigt.
