@@ -137,11 +137,8 @@ Anstelle der `LogSemicolonConverterStrategy`-Klasse könnte der `LogFileAdapter`
 this.strategy = new LogSlashSemicolonConverterStrategy();
 ```
 
-
 #### Adapter-Pattern
 Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung gewährleisten.
-
- <br>
 
 **Akteure**: 
 
@@ -168,7 +165,7 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 ##### Serialisierung
 * Überlegungen zum Mengengerüst der Datenübertragung
 
-> TODO
+> Objekte der Klasse LogMessage mit den Attributen. Die Anzahl davon kann grösser als 1000 LogMessages/s sein.
 
 * Konzepte und Konstrukte aus dem Input Synchronisation:
 	* Messages via TCP/IP übertragen
@@ -185,7 +182,7 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 	* warum Sie eine der vorgestellten Codeskizzen des Message Passing übernehmen und einsetzen oder
 	* warum Sie Message Passing in dieser Art nicht einsetzen
 
-> Um die Anforderungen ab zu deken genügt es, ein einzelnes Objekt als Message zu übergeben.
+> Um die Anforderungen ab zu decken genügt es, ein einzelnes Objekt als Message zu übergeben.
 
 * Welchen Mehrwert ergibt ein Message Passing Protokoll im Projekt?
 
@@ -193,7 +190,7 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 
 * Andere Möglichkeiten wie Sie ein Message Passing Protokoll (in Ihrem Projekt) umsetzen? Welche?
 
-> TODO
+> Meldungen als universell ausgelagerte Objekte. Zum Beispiel XML.
 
 ##### RMI
 * Wie sieht die proprietäre RMI Schnittstelle aus? Dokumentieren Sie diese!
@@ -214,7 +211,7 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 
 * Welche logische Uhr (mit Lamport-Zeitstempel oder Vektor-Zeitstempel) ist sinnvoll, bezüglich des Mehrwerts vs. Aufwand?
 
-> TODO
+> Ein Lamport-Zeitstempel würde für unser Projekt genügen, da nicht mehrere unterschiedliche Objekte abhängig voneinander sind.
 
 ****
 
@@ -333,7 +330,7 @@ kann mit dem Schlüssel `name` noch der Name des Loggers festgelegt werden.
 #### server.properties
 | Schlüssel | Standard-Wert |
 | --------- | ------------- |
-| host      | localhost     |
+| host      | 127.0.0.1     |
 | port      | 54321         |
 | amount    | 10            |
 
@@ -490,8 +487,6 @@ Die `LogLevels` finden folgende Verwendung:
 
 ## 6 Testing
 Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
-
-<span style="color:red">TODO: Testing überarbeiten</span>
 
 ### 6.1 Unit Testing
 
