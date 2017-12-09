@@ -38,6 +38,7 @@
 | 3.6  | 28.11.17 | Melvin Werthmüller      | Kapitel zu Diskussionen bezüglich Entscheide   | done   |
 | 3.7  | 04.12.17 | Christopher Christensen | LogConverterStrategy zur Doku hinzugefügt      | done   |
 | 3.8  | 05.12.17 | Lukas Arnold            | Remove comments and fix wrong version number   | done   |
+| 3.9  | 08.12.17 | Melvin Werthmüller      | Anpassungen zur Aufgabenstellung v2            | done   |
 
 ****
 
@@ -46,22 +47,18 @@
 ### 1.1 Grobe Systemübersicht
 <img src="img/base-system-overview_v2.png" width=400>
 
-Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. 
+Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. Falls die Verbindung zum Server unterbrochen wird, so werden die Meldungen temporär in ein File auf dem Client gespeichert. Diese werden dann bei erneuter Verbindung übermittelt.
 
 Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.
 
 Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.
 
-Im späteren Verlauf des Projektes kommen weitere Anforderungen hinzu.
-
-<span style="color:red">TODO Grobbeschreibung anpassen und ergänzen</span>
+Zusätzlich soll ein Viewer per RMI vom Server über eine neue Meldung benachrichtig werden. Der Viewer zeigt dann alle Meldungen an, welche beim Server ankommen.
 
 ### 1.2 Vollständige Systemübersicht
 Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
 
 <img src="img/VSK_UML.png" width=600>
-
-Im beiliegenden Dokument DokumentationMessageLogger.pdf werden die einzelnen Komponenten detaillierter beschrieben. Auch die Relationen untereinander werden ausführlich aufgezeigt.
 
 <span style="color:red">TODO Systemübersicht aktualisieren</span>
 
