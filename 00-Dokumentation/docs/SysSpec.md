@@ -504,7 +504,7 @@ Die `LogLevels` finden folgende Verwendung:
 ****
 
 ## 6 Testing
-Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server wird durch manuelle Test abgedeckt.
+Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server und der LoggerViewer werden durch manuelle Test abgedeckt. 
 
 ### 6.1 Unit Testing
 
@@ -539,6 +539,9 @@ Für den Integrationstest der Einbindung in die GameOfLife Applikation wird gepr
 
 #### LoggerComponent & LoggerServer
 Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogFileAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > `LogFileAdapter`).
+
+#### LoggerViewer
+Um die Funktionalität des LoggerViewers zu testen, müssen die folgenden drei Szenarien geprüft werden. LoggerServer mit keinem Viewer, LoggerServer mit einem Viewer und LoggerServer mit zwei Viewers. Für jedes Szenarie muss zuerst ein Server gestartet werden und ein Game. Danach wird die zu prüfende Anzahl Viewer gestartet. Nun müssen im Game ein paar Aktionen ausgelöst werden, welche zu Log-Einträgen führen. Danach können die Meldungen auf der Server-Konsole mit den Einträgen auf dem Viewer verglichen werden und falls es die Gleichen sind gilt der Test als bestanden.   
 
 ****
 
