@@ -39,6 +39,7 @@
 | 3.7  | 04.12.17 | Christopher Christensen | LogConverterStrategy zur Doku hinzugefügt      | done   |
 | 3.8  | 05.12.17 | Lukas Arnold            | Remove comments and fix wrong version number   | done   |
 | 3.9  | 08.12.17 | Melvin Werthmüller      | Anpassungen zur Aufgabenstellung v2            | done   |
+| 4.0  | 09.12.17 | Lukas Arnold            | RMI Diskussion ergänzt                         | done   |
 
 ****
 
@@ -191,9 +192,29 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 
 ##### RMI
 * Wie sieht die proprietäre RMI Schnittstelle aus? Dokumentieren Sie diese!
-* Wie sieht der RMI Viewer aus? Tipp: Nicht zu aufwendig, eine einfache Anzeige der eingehenden Message (siehe Muss-Features 7) reicht.
+
+> Siehe dazu das Unterkapitel "RMI-Verbindung" im Kapitel "4 Implementation von Komponenten"
+
+* Wie sieht der RMI Viewer aus? 
+
+> Der Viewer besteht aus einem `JFrame`, welches ein `JScrollPanel` und eine `JTable` enthält. 
+> Siehe dazu das Unterkapitel "Logger-Viewer" im Kapitel "4 Implementation von Komponenten"
+
 * Wie funktioniert das Push-Prinzip mit RMI und wie lässt sich dieses implementieren?
-* Welche Komponenten sind für die RMI Kommunikation notwendig? Welche Einstellungen müssen im Netzwerk gemacht werden (z.B. Firewall)?
+
+> Jeder Client registriert sich bei einem Server mit einem Callback. Sobald dann
+> der Server eine Nachricht an alle Clients senden möchte, iteriert er durch die 
+> Liste der Callbacks und ruft auf jedem Callback eine definierte Methode auf.
+
+* Welche Komponenten sind für die RMI Kommunikation notwendig? 
+
+> 1. RMI-Registry (stellt die RMI-Infratstruktur zur Verfügung)
+> 2. RMI-Service-Provider (stellt einen Service bereit) 
+> 3. RMI-Service-Consumer (konsumiert einen Service)
+
+* Welche Einstellungen müssen im Netzwerk gemacht werden?
+
+> Eingehende Verbindungen auf den Port der RMI-Registry müssen erlaubt sein.
 
 ##### Uhren Synchronisation
 * Wo könnten logische Uhren zum Einsatz kommen? Begründen Sie in jedem Fall Ihre Antwort,
