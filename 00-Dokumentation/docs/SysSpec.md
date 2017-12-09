@@ -40,6 +40,7 @@
 | 3.8  | 05.12.17 | Lukas Arnold            | Remove comments and fix wrong version number   | done   |
 | 3.9  | 08.12.17 | Melvin Werthmüller      | Anpassungen zur Aufgabenstellung v2            | done   |
 | 4.0  | 09.12.17 | Lukas Arnold            | RMI Diskussion ergänzt                         | done   |
+| 4.1  | 10.12.17 | Valentin Bürgler        | allg. Fehlerkorrektur, Änderungen an Kapitel 6 | done   |
 
 ****
 
@@ -375,7 +376,7 @@ Die Übertrag der Meldungen geschieht über den `ObjectInputStream` / `ObjectOut
 ### LoggerComponent (Client)
 Der Logger besteht hauptsächlich aus der Klasse `BaseLogger`, welcher das `Logger`-Interface implementiert. Er bietet die Methode `log` an, welche mit einem `LogLevel` als erstes Argument und einer Nachricht als String, aufgerufen werden kann um etwas zu loggen. Zusätzlich steht noch eine überladene Methode bereit, welche als zweites Argument ein `Throwable` akzeptiert, was es ermöglicht auch Exceptions zu loggen. 
 
-Durch die Instanzierung eines Loggers wird sofort ein `LoggerSocket` erstellt und gestartet. Er enthält eine Queue mit den Meldungen, welche an den Server gesendet werden sollten. Er bietet ausserdem die Methode `queueLogMessage`, welche asynchron eine `LogMessage` in die Queue speichert. Beim Starten des Sockets wird ein `LogConsumer`-Thread gestartet, welcher ständig die Queue abarbeitet und die enthaltenen Nachrichten via einen `ObjectOutputStream` über einen TCP-Socket an den Server sendet. Falls das Senden zu einer `IOException` Exception führt, werden die Meldungen über den `LogAdapter` und dann dem `StringPersistor` in ein lokales temporäres TextFile geschrieben. Wenn die Verbindung wieder hergestellt ist, wird überprüft, ob es `LogMessages` gibt, welche in dass temporäre TextFile geschrieben wurde. Falls ja werden diese zuerst geschickt. Nachdem alle Meldungen übermittelt wurden, wird das TextFile gelöscht. Erst dann wird mit dem regulären Senden weitergefahren.
+Durch die Instanziierung eines Loggers wird sofort ein `LoggerSocket` erstellt und gestartet. Er enthält eine Queue mit den Meldungen, welche an den Server gesendet werden sollten. Er bietet ausserdem die Methode `queueLogMessage`, welche asynchron eine `LogMessage` in die Queue speichert. Beim Starten des Sockets wird ein `LogConsumer`-Thread gestartet, welcher ständig die Queue abarbeitet und die enthaltenen Nachrichten via einen `ObjectOutputStream` über einen TCP-Socket an den Server sendet. Falls das Senden zu einer `IOException` Exception führt, werden die Meldungen über den `LogAdapter` und dann dem `StringPersistor` in ein lokales temporäres TextFile geschrieben. Wenn die Verbindung wieder hergestellt ist, wird überprüft, ob es `LogMessages` gibt, welche in dass temporäre TextFile geschrieben wurde. Falls ja werden diese zuerst geschickt. Nachdem alle Meldungen übermittelt wurden, wird das TextFile gelöscht. Erst dann wird mit dem regulären Senden weitergefahren.
 
 Achtung: falls die Verbindung während dem senden der Meldungen aus dem temporären TextFile unterbrochen wird, kann es schlussendlich zu redundanten Meldungen auf dem Server führen.
 
@@ -504,7 +505,7 @@ Die `LogLevels` finden folgende Verwendung:
 ****
 
 ## 6 Testing
-Die Funktionalität sollte so gut wie möglich durch Unit-Tests abgedeckt werden. Es macht keinen Sinn die Einbindung ins Game automatisiert zu testen, da viel zu umfangreiche Änderungen notwendig wären. Deswegen werden für die Integration ein paar manuelle Tests definiert, welche regelmässig überprüft werden. Auch die Übertragung der Daten vom Client zum Server und der LoggerViewer werden durch manuelle Test abgedeckt. 
+Die Funktionalität sollte so gut wie möglich durch Unit-Tests, auf welche im Kapitel 6.1 weiter eingegangen wird, abgedeckt werden. Es wurde entschieden, die Integration der Komponenten in die GameOfLife Applikation manuell zu testen. Auch die Übertragung der Daten vom Client zum Server und der LoggerViewer werden durch manuelle Test abgedeckt. 
 
 ### 6.1 Unit Testing
 
@@ -528,7 +529,7 @@ Der `LogFileAdapter` hat die Methoden `void writeLogMessage(LogMessage logMessag
 Die Methode `deleteFile()` wird immer am Ende der Tests ausgeführt. Danach kann man überprüfen, ob das `File` tatsächlich gelöscht wurde.
 
 #### StringPersistor
-Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanzieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der `LogFileAdapter` getestet (siehe Kapitel Unit Testing > `LogFileAdapter`). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
+Der `StringPersistor` wird anhand eines JUnit-Tests `StringPersistorTest` getestet. Der Test für die Methode `void setFile()` beginnt mit dem Instanziieren eines `StringPersistor`-Objekts und `File`-Objekts. Das `File` wird über die Methode `setFile` dem `File`-Attribut des `StringPersistor` übergeben. Über die Methode `getFile()` wird in der `assertEquals(Boolean expected, Boolean actual)` geprüft, ob es sich beim Rückgabewert, um dasselbe `File` handelt, das übergeben wurde. Die Methode `void save(Instant instant, LogMessage logMessage)` wird nach ähnlichem Verfahren, wie der `LogFileAdapter` getestet (siehe Kapitel Unit Testing > `LogFileAdapter`). Die Methode `List<PersistedString> get()` wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
 
 #### LogConverterStrategy
 Die Implementationen von `LogConverterStrategy` (`LogSemicolonConverterStrategy`, `LogSlashConverterStrategy`) werden ebenfalls anhand von JUnit-Tests getestet. Wobei jeweils getested wird, dass die `LogMessage`-Objekte korrekt konvertiert werden und andererseits, dass die Strings korrekt als `LogMessage` zurückgegeben werden.
@@ -541,7 +542,7 @@ Für den Integrationstest der Einbindung in die GameOfLife Applikation wird gepr
 Der `LoggerServer` wird vorallem mit dem `DemoLogger` getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen `LogLevels` an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten `StringPersistor`und `LogFileAdapter` haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing > StringPersistor und Unit Testing > `LogFileAdapter`).
 
 #### LoggerViewer
-Um die Funktionalität des LoggerViewers zu testen, müssen die folgenden drei Szenarien geprüft werden. LoggerServer mit keinem Viewer, LoggerServer mit einem Viewer und LoggerServer mit zwei Viewers. Für jedes Szenarie muss zuerst ein Server gestartet werden und ein Game. Danach wird die zu prüfende Anzahl Viewer gestartet. Nun müssen im Game ein paar Aktionen ausgelöst werden, welche zu Log-Einträgen führen. Danach können die Meldungen auf der Server-Konsole mit den Einträgen auf dem Viewer verglichen werden und falls es die Gleichen sind gilt der Test als bestanden.   
+Um die Funktionalität des LoggerViewers zu testen, müssen die folgenden drei Szenarien geprüft werden. LoggerServer mit keinem Viewer, LoggerServer mit einem Viewer und LoggerServer mit zwei Viewers. Für jedes Szenario muss zuerst ein Server und ein Game gestartet werden. Danach wird die zu prüfende Anzahl Viewer gestartet. Nun müssen im Game ein paar Aktionen ausgelöst werden, welche zu Log-Einträgen führen. Danach können die Meldungen auf der Server-Konsole mit den Einträgen auf dem Viewer verglichen werden und falls es die Gleichen sind gilt der Test als bestanden.   
 
 ****
 
