@@ -70,7 +70,7 @@ Das folgende UML soll eine detaillierte Übersicht über das implementierte Syst
 In der Applikation instanziiert das Singleton `MessageLogger` einmalig über seine statische `getInstance`-Methode mit der `LoggerFactory` eine spezifische `Logger`-Implementierung und stellt diese dann zur Verfügung. Diese `Logger`-Implementation bietet dann Methoden um einen `String` oder ein `Throwable` mit dem entsprechenden `LogLevel` zu loggen. Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Des Weiteren ist ein Thread `LogConsumer` dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken. Falls die Objekte nicht an den Server geschickt werden können, werden diese mit dem `StringPersistor` in ein temporäres TextFile geschriben. Sobald die Verbindung wieder vorhanden ist, werden zuerst die Meldungen aus dem TextFile an den Server geschickt, bevor neue Meldungen übermittelt werden.
 
 ### 1.4 Ablauf auf dem Server
-Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für das Empfangen sind dabei mehere `SocketHandler` (Standard-Konfiguration sind 10) zuständig. Jeder dieser `SocketHandler` hält die Verbindung zu einem Client. In der Standard-Konfiguration sind so maximal 10 Clients gleichzeit möglich, welche mit dem gleichen Server kommunizieren. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt und an die `RmiRegistry`-Thread sendet. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogWriterAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch einen Aufruf der Methode `setFile` im Logger-Server definiert. Die `RmiRegistry` sendet die Meldung dann weiter an den RMI-Server, welcher sie an alle angemeldeten Clients verteilt.
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für das Empfangen sind dabei mehere `SocketHandler` (Standard-Konfiguration sind 10) zuständig. Jeder dieser `SocketHandler` hält die Verbindung zu einem Client. In der Standard-Konfiguration sind so maximal 10 Clients gleichzeit möglich, welche mit dem gleichen Server kommunizieren. Für jede erhaltene Nachricht wird ein eigener `LogHandler` erstellt, welcher die Meldungen asynchron an den `LogFileAdapter` zum Stringpersistor weitergibt und an den `RmiRegistry`-Thread sendet. Der Stringpersistor ermöglicht es dem `LogHandler` (via `LogFileAdapter`) über die `save`-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch die `StringPersistor`-Methode `setFile` ebenfalls vom `LogFileAdapter` definiert. Die `RmiRegistry` sendet die Meldung dann weiter an den RMI-Server, welcher sie an alle angemeldeten Clients verteilt.
 
 ****
 
@@ -92,7 +92,7 @@ Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinz
 <img src="img/SingletonPattern.png">
 
 Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
-Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Dieses hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Die Klassen des Spiels, die etwas loggen sollen, halten diese Instanz in einer hinzugefügten privaten Klassenvariabel. Dadurch kann von überall aus im Spiel auf die Logger-Komponente zugegriffen werden.
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse `MessageLogger`. Diese hält ein privates, statisches Attribut `instance` vom Interface-Typ `Logger`. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode `getInstance()` geboten. Die Klassen des Spiels, die etwas loggen sollen, halten diese Instanz in einer hinzugefügten privaten Klassenvariabel. Dadurch kann von überall aus im Spiel auf die Logger-Komponente zugegriffen werden.
 
 #### Fabrikmethode-Pattern
 <img src="img/FactoryPattern.png">
@@ -110,7 +110,7 @@ Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich ei
 
 <img src="img/LogConverterStrategy.png">
 
-Das Strategie-Pattern wurde ebenfalls verwendet, um die `LogMessage`-Objekte in verschiedenen String-Formaten abspeichern zu können. Der `LogFileAdapter` verwendet das `LogSemicolonConverterStrategy`-Interface, welches das `LogConverterStrategy` implementiert. Im folgenden Code-Abschnitt sieht man den Konstruktor der Klasse `LogFileAdapter`, welche auch das Attribut `private LogConverterStrategy strategy` besitzt. 
+Das Strategie-Pattern wurde ebenfalls verwendet, um die `LogMessage`-Objekte in verschiedenen String-Formaten abspeichern zu können. Der `LogFileAdapter` verwendet das `LogSemicolonConverterStrategy`, welches das `LogConverterStrategy`-Interface implementiert. Im folgenden Code-Abschnitt sieht man den Konstruktor der Klasse `LogFileAdapter`, welche auch das Attribut `private LogConverterStrategy strategy` besitzt. 
 
 ```java
 public LogFileAdapter(String filename) throws ClassNotFoundException, 
@@ -128,7 +128,7 @@ IllegalAccessException, InstantiationException {
 
 ```
 
-Anstelle der `LogSemicolonConverterStrategy`-Klasse könnte der `LogFileAdapter` die Klasse `LogSlashConverterStrategy` verwenden, welches ebenfalls das Interface `LogConverterStrategy` implementiert. Dies würde man dann nur im Konstruktor des `LogFileAdapter` ändern.
+Anstelle der `LogSemicolonConverterStrategy`-Klasse könnte der `LogFileAdapter` die Klasse `LogSlashConverterStrategy` verwenden, welches ebenfalls das Interface `LogConverterStrategy` implementiert. Dies müsste man dann nur im Konstruktor des `LogFileAdapter` ändern.
 
 ```java 
 this.strategy = new LogSlashSemicolonConverterStrategy();
@@ -154,7 +154,7 @@ Wir verwenden das Adapter Pattern an zwei Stellen in unserem MessageLogger:
 <img src="img/AdapterPatternLH.png" width="80%">
 
 #### Konfigurationsdateien
-Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhes File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
+Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein solches File aufgebaut ist kann man unter der folgenden Adresse nachlesen: https://de.wikipedia.org/wiki/Java-Properties-Datei. In diesem Projekt werden die zwei Konfigurationsdateien `client.properties` und `server.properties` eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden. 
 
 
 #### Diskussionen
@@ -179,7 +179,7 @@ Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein soclhe
 	* warum Sie eine der vorgestellten Codeskizzen des Message Passing übernehmen und einsetzen oder
 	* warum Sie Message Passing in dieser Art nicht einsetzen
 
-> Um die Anforderungen ab zu decken genügt es, ein einzelnes Objekt als Message zu übergeben.
+> Um die Anforderungen abzudecken genügt es, ein einzelnes Objekt als Message zu übergeben.
 
 * Welchen Mehrwert ergibt ein Message Passing Protokoll im Projekt?
 
@@ -246,9 +246,9 @@ Die folgenden Schnittstellen wurden uns vorgeschrieben.
 <img src="img/LoggerInterface.png" width=300>
 
 Das `Logger`-Interface stellt drei Methoden zur Verfügung. Die Methode `setReportLevel` ist dazu da, 
-um einzustellen ab welchem LogLevel die Nachrichten an den Server gesendet werden. Zusätzlich wird 
+um einzustellen, ab welchem LogLevel die Nachrichten an den Server gesendet werden. Zusätzlich wird 
 die Methode `log` definiert, für welche eine Überladung existiert. Mit der einen Variante lässt sich 
-einen Nachricht als `String` loggen und mit der anderen eine Objekt vom Typ `Throwable`. 
+eine Nachricht als `String` loggen und mit der anderen ein Objekt vom Typ `Throwable`. 
 
 > Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)
 
@@ -272,7 +272,7 @@ geht von einem Standard-Wert aus, welcher in der Implementierung festgelegt werd
 | `CRITICAL` | 50   |
 
 In der LoggerInterface-Komponente sind ebenfalls die verschiedenen `LogLevel` definiert. 
-Diese Definition wurde über eine Java-Enum gelöst. Damit die `LogLovel` untereinander 
+Diese Definition wurde über eine Java-Enum gelöst. Damit die `LogLevel` untereinander 
 verglichen werden können ist jedem Level noch einen Code zugeordnet. Je höher der Code
 ist, desto schlimmer ist eine Nachricht einzustufen.
 
@@ -282,7 +282,7 @@ ist, desto schlimmer ist eine Nachricht einzustufen.
 
 <img src="img/StringPersistorInterface.png" width="40%">
 
-Das `StringPersistor`-Interface stellt die Methode `void setFile(File file)` zur Verfügung, um das `File` festzulegen, in welches die `LogMessage`-Objekte geschrieben werden. Die Methode `void save(Instant timestamp, String payload)` schreibt die `LogMessage`-Objekte mit einem "timestamp" vom Typ `Instant` in das File. Die Methode `List<PersistedString> get(int count)` holt die gewünschte Anzahl (= `int i`) aus dem `File` und fügt sie in eine `List<PersistedString>`.
+Das `StringPersistor`-Interface stellt die Methode `void setFile(File file)` zur Verfügung, um das `File` festzulegen, in welches die `LogMessage`-Objekte geschrieben werden. Die Methode `void save(Instant timestamp, String payload)` schreibt die `LogMessage`-Objekte mit einem "timestamp" vom Typ `Instant` in das `File`. Die Methode `List<PersistedString> get(int count)` holt die gewünschte Anzahl (= `int i`) aus dem `File` und fügt sie in eine `List<PersistedString>`.
 
 > Verwendete Version: 4.0.0 (ch.hslu.vsk.stringpersistor-api)
 
@@ -297,7 +297,7 @@ Die folgenden Schnittstellen wurden von uns vorgeschrieben.
 * TCP/IP Schnittstelle
 
 #### LogMessage
-Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
+Die `LogMessage` speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
 
 | Attribut   | Beschreibung | Datentyp |
 | ---------- | ------------ | -------- |
@@ -311,9 +311,9 @@ Die LogMessage speichert Meldungen mit zusätzlichen Attributen. Folgende Tabell
 
 <img src="img/LogAdapter.png" width="40%">
 
-Der `LogAdapter` stellt die Schnittstelle vom Server zum `Stringpersistor` her und versteht sich somit als Adapter.  Der Adapter definiert das `File` und das Format der zu speichernden `LogMessage`-Objekte. Der WriteAdapter verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<LogMessage> readLogMessages()` und `void deleteFile()` vor.
+Der `LogAdapter` stellt die Schnittstelle vom Server und vom Client zum `Stringpersistor` her und versteht sich somit als Adapter.  Der Adapter definiert das `File` und das Format der zu speichernden `LogMessage`-Objekte. Das `LogAdapter`-Interface verfügt über die Schreibmethode `void writeLogMessages(LogMessage logMessage)`. Es schreibt auch die Implementation der Methode `List<LogMessage> readLogMessages()` und `void deleteFile()` vor.
 
-Der Server nutzt diesen Adapter über die Implementation `LogFileAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Der `LogConsumer` verwendet ebenfalls diesen Adapter, um bei Verbindungsunterbruch zum Server, die `LogMessage`-Objekte in ein lokales `File` zu schreiben. Nach erneutem Verbindungsaufbau werden diese `LogMessage`-Objekte wieder aus diesem `File` gelesen mit der Methode `List<LogMessage> readLogMessages()`. Die Methode `void deleteFile()` wird dafür verwendet, das nun gelesene `File` zu entfernen.
+Der Server nutzt diesen Adapter über die Implementation `LogFileAdapter`, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Der `LogConsumer` verwendet ebenfalls diesen Adapter, um bei Verbindungsunterbruch zwischen dem Client und dem Server, die `LogMessage`-Objekte in ein lokales `File` zu schreiben. Nach erneutem Verbindungsaufbau werden diese `LogMessage`-Objekte wieder aus diesem `File` gelesen mit der Methode `List<LogMessage> readLogMessages()`. Die Methode `void deleteFile()` wird dafür verwendet, das nun gelesene `File` zu entfernen.
 
 #### LogConverterStrategy
 
@@ -365,7 +365,7 @@ beendet und somit ein Platz frei wird.
 #### TCP/IP Schnittstelle
 Der Logger beinhaltet die Funktion `log`, welche eine `LogMessage` an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread `LogProducer` in eine Queue geschrieben. Desweiteren ist ein Thread `LogConsumer` dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
 
-Die Übertrag der Meldungen geschieht über den `ObjectInputStream` / `ObjectOutputStream`, welche die serialisierbare Klasse `LogMessage` als Objekte überträgt.
+Die Übertragung der Meldungen geschieht über den `ObjectInputStream` / `ObjectOutputStream`, welche die serialisierbare Klasse `LogMessage` als Objekte überträgt.
 
 ****
 
