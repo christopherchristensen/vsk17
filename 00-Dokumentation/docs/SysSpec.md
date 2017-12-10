@@ -387,7 +387,7 @@ Der LoggerServer besitzt eine `main` Methode, welche für das Starten des Server
 
 * ExecutorService
 
-Dies ist ein ThreadPool, welcher für die einzelnen LogHandler <span style="color: red"> HIER FEHLT EIN WORT </span> abarbeitet. Genauer handelt es sich um einen `newFixedThreadPool` mit fünf Threads.
+Dies ist ein ThreadPool, welcher für die einzelnen `LogHandler` Threads abarbeitet. Genauer handelt es sich um einen `newFixedThreadPool` mit fünf Threads.
 
 * LogFileAdapter
 
