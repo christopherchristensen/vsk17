@@ -19,7 +19,7 @@ Client & Server:
 
 Organisation:
 - Produktmanagement Plan	V2.0
-- Systemspezifikation	V5
+- Systemspezifikation	V5.0
 ==================================================================================
 Release: 1
 
