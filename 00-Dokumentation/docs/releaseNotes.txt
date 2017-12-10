@@ -18,8 +18,8 @@ Client & Server:
 - StringPersistorAPI	V4.0 (stringpersistor-api.jar)
 
 Organisation:
-- Produktmanagement Plan	V1.3
-- Systemspezifikation	V3.7
+- Produktmanagement Plan	V2.0
+- Systemspezifikation	V4.1
 ==================================================================================
 Release: 1
 
