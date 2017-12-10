@@ -1,0 +1,41 @@
+Release Notes: 
+Message Logger, Team 1
+==================================================================================
+Release: 2
+
+Client:
+- GameOfLife	V1.0 (game.jar)
+- LoggerInterface	V1.0 (loggerinterface.jar)
+- LoggerComponent	V2.0 (loggercomponent.jar)
+
+Server:
+- LoggerServer	V2.0 (loggerserver.jar)
+- LoggerViewer	V2.0 (loggerviewer.jar)
+
+Client & Server:
+- LoggerCommon	V2.0 (loggercommon.jar)
+- StringPersistor	V1.0 (stringpersistor.jar)
+- StringPersistorAPI	V4.0 (stringpersistor-api.jar)
+
+Organisation:
+- Produktmanagement Plan	V2.0
+- Systemspezifikation	V4.1
+==================================================================================
+Release: 1
+
+Client:
+- GameOfLife	V1.0 (game.jar)
+- LoggerInterface	V1.0 (loggerinterface.jar)
+- LoggerComponent	V1.0 (loggercomponent.jar)
+
+Server:
+- LoggerServer	V1.0 (loggerserver.jar)
+
+Client & Server:
+- LoggerCommon	V1.0 (loggercommon.jar)
+- StringPersistor	V1.0 (stringpersistor.jar)
+- StringPersistorAPI	V4.0 (stringpersistor-api.jar)
+
+Organisation:
+- Produktmanagement Plan	V0.9
+- Systemspezifikation	V1.6
