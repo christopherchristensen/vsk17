@@ -41,7 +41,8 @@
 | 3.9  | 08.12.17 | Melvin Werthmüller      | Anpassungen zur Aufgabenstellung v2            | done   |
 | 4.0  | 09.12.17 | Lukas Arnold            | RMI Diskussion ergänzt                         | done   |
 | 4.1  | 10.12.17 | Valentin Bürgler        | allg. Fehlerkorrektur, Änderungen an Kapitel 6 | done   |
-| 4.2  | 10.12.17 | Lukas Arnold            | Überarbeitung, Reviewing, Kommentare!                         | done   |
+| 4.2  | 10.12.17 | Lukas Arnold            | Überarbeitung, Reviewing, Kommentare!          | done   |
+| 4.3  | 10.12.17 | Melvin Werthmüller      | TODOS entfernt.                                | done   |
 
 ****
 
@@ -62,8 +63,6 @@ Zusätzlich soll ein Viewer per RMI vom Server über eine neue Meldung benachric
 Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
 
 <img src="img/VSK_UML.png" width=600>
-
-<span style="color:red">TODO Systemübersicht aktualisieren</span>
 
 ****
 
