@@ -41,8 +41,9 @@
 | 3.9  | 08.12.17 | Melvin Werthmüller      | Anpassungen zur Aufgabenstellung v2            | done   |
 | 4.0  | 09.12.17 | Lukas Arnold            | RMI Diskussion ergänzt                         | done   |
 | 4.1  | 10.12.17 | Valentin Bürgler        | allg. Fehlerkorrektur, Änderungen an Kapitel 6 | done   |
-| 4.2  | 10.12.17 | Lukas Arnold            | Überarbeitung, Reviewing, Kommentare!          | done   |
+| 4.2  | 10.12.17 | Christopher Christensen | Überarbeitung, Reviewing, Kommentare!          | done   |
 | 4.3  | 10.12.17 | Melvin Werthmüller      | TODOS entfernt.                                | done   |
+| 5.0  | 10.12.17 | Christopher Christensen | Finale Version der Dokumentation          | done   |
 
 ****
 
