@@ -1,0 +1,714 @@
+\documentclass[12pt,a4paper,twosided]{scrartcl}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[left=2.00cm, right=2.00cm, top=2.00cm, bottom=2.50cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[lastpage,user]{zref}
+\usepackage{tabularx}
+\usepackage{lscape}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{tabularx}
+
+\fancyhf{}
+\fancyhead[L]{Systemspezifikationen}
+\fancyhead[R]{Team 1}
+\fancyfoot[L]{\today}
+\fancyfoot[R]{Seite \thepage\ von \zpageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancypagestyle{plain}{
+	\fancyhf{}
+	\fancyhead[L]{}
+	\fancyhead[R]{}
+	\fancyfoot[L]{}
+	\fancyfoot[R]{}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{0pt}
+
+\newenvironment{tight_enumerate}{
+\begin{enumerate}
+	\setlength{\itemsep}{0pt}
+	\setlength{\parskip}{0pt}
+}{\end{enumerate}}
+
+
+\pagestyle{fancy}
+
+\setcounter{page}{0}
+
+\title{Systemspezifikationen - Team 1}
+\author{Christopher Christensen\\Lukas Arnold\\Melvin Werthmüller\\Valentin Bürgler}
+\date{\today}
+
+\begin{document}
+	
+\thispagestyle{plain}
+\maketitle
+
+\begin{center}
+	\begin{tabularx}{\textwidth}{|r|r|l|X|}
+		\hline
+		\textbf{Rev.} & \textbf{Datum} & \textbf{Autor} & \textbf{Bemerkungen} 					   \\ \hline
+		1.1  & 24.10.17 & Valentin Bürgler        & Erster Entwurf                                 \\ \hline
+		1.2  & 31.10.17 & Christopher Christensen & Erweiterung Kap.1/2                            \\ \hline
+		1.3  & 01.11.17 & Valentin Bürgler        & Bearbeitung Kap.2/4                            \\ \hline
+		1.4  & 03.11.17 & Valentin Bürgler        & Bearbeitung Kap.1/3, Diagramme + Configs \\ \hline
+		1.5  & 05.11.17 & Christopher Christensen & Für Zwischenabgabe prüfen                      \\ \hline
+		1.6  & 05.11.17 & Valentin Bürgler        & Überarbeitung aller Kapitel                    \\ \hline
+		2.0  & 06.11.17 & Christopher Christensen & Aufbereitung für Merge mit alter Doku \\ \hline
+		2.1  & 10.11.17 & Christopher Christensen & Merge SysSpec mit alter Dokumentation          \\ \hline
+		2.2  & 10.11.17 & Christopher Christensen & LogFile.txt Specs added                        \\ \hline
+		2.3  & 10.11.17 & Melvin Werthmüller      & Content organisation                           \\ \hline
+		2.4  & 10.11.17 & Melvin Werthmüller      & LoggerServer specs updated                     \\ \hline
+		2.5  & 10.11.17 & Christopher Christensen & einige TODOs erledigt                          \\ \hline
+		2.6  & 15.11.17 & Lukas Arnold            & Erklärungen zu diversen Punkten erweitert      \\ \hline
+		2.7  & 16.11.17 & Valentin Bürgler        & Patterns beschrieben                           \\ \hline
+		2.8  & 17.11.17 & Valentin Bürgler        & UMLs zu Patterns eingefügt                     \\ \hline
+		2.9  & 17.11.17 & Valentin Bürgler        & Überarbeitung aller Referenzen auf Singleton   \\ \hline
+		3.0  & 17.11.17 & Lukas Arnold            & Explain LoggerViewer and RMI-Connection        \\ \hline
+		3.1  & 22.11.17 & Melvin Werthmüller      & Anpassungen Aufgabenstellung V2 vorbereitet    \\ \hline
+		3.2  & 27.11.17 & Melvin Werthmüller      & Anpassungen Beschreibung Logger Client         \\ \hline
+		3.3  & 27.11.17 & Lukas Arnold            & gleichzeitige Verbindungen besser erklärt      \\ \hline
+		3.4  & 27.11.17 & Lukas Arnold            & Systemübersicht aktualisiert                   \\ \hline
+		3.5  & 27.11.17 & Christopher Christensen & Anpassungen StringPersistor/LogFileAdapter     \\ \hline
+		3.6  & 28.11.17 & Melvin Werthmüller      & Kapitel zu Diskussionen bezüglich Entscheide   \\ \hline
+		3.7  & 04.12.17 & Christopher Christensen & LogConverterStrategy zur Doku hinzugefügt      \\ \hline
+		3.8  & 05.12.17 & Lukas Arnold            & Remove comments and fix wrong version nr   \\ \hline
+		3.9  & 08.12.17 & Melvin Werthmüller      & Anpassungen zur Aufgabenstellung v2            \\ \hline
+		4.0  & 09.12.17 & Lukas Arnold            & RMI Diskussion ergänzt                         \\ \hline
+		4.1  & 10.12.17 & Valentin Bürgler        & allg. Fehlerkorrektur, Änderungen an Kapitel 6 \\ \hline
+		4.2  & 10.12.17 & Christopher Christensen & Überarbeitung, Reviewing, Kommentare!          \\ \hline
+		4.3  & 10.12.17 & Melvin Werthmüller      & TODOS entfernt.                                \\ \hline
+		5.0  & 10.12.17 & Christopher Christensen & Finale Version der Dokumentation               \\ \hline
+	\end{tabularx}
+\end{center}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Systemübersicht}
+\subsection{Grobe Systemübersicht}
+
+Es soll eine Logger-Komponente implementiert werden, die eingebunden in eine bestehende Java-Applikation über Methodenaufrufe Meldungen aufzeichnet, welche dann per TCP/IP an einen Logger-Server gesendet werden, wo sie in einem wohldefinierten Format gespeichert werden. Falls die Verbindung zum Server unterbrochen wird, so werden die
+Meldungen temporär in ein File auf dem Client gespeichert. Diese werden dann bei erneuter Verbindung übermittelt.
+
+Sinnvolle Ereignisse und Situationen, die geloggt werden müssen, sind zu definieren
+und die entsprechenden Aufrufe in der Java-Applikation zu integrieren.
+
+Die durch ein Interface-Team definierten LogLevels sind sinnvoll und konsistent zu nutzen. Weiter sind die vorgegebenen Schnittstellen Logger, LoggerSetup und StringPersistor einzuhalten. Es müssen sich mehrere Clients mit einem Server verbinden können.
+
+Zusätzlich soll ein Viewer per RMI vom Server über eine neue Meldung benachrichtig werden. Der Viewer zeigt dann alle Meldungen an, welche beim Server ankommen.
+
+\begin{figure}[h]
+	\vspace{1cm}
+	\centering
+	\includegraphics[width=\linewidth]{img/base-system-overview_v2}
+	\caption{Grobe Systemübersicht}
+	\label{fig:base-system-overview}
+\end{figure}
+
+\begin{landscape}
+	\subsection{Vollständige Systemübersicht}
+	Das folgende UML soll eine detaillierte Übersicht über das implementierte System schaffen.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{img/VSK_UML}
+		\caption{Vollständige Systemübersicht}
+		\label{fig:vskuml}
+		\vspace{-1cm}
+	\end{figure}
+\end{landscape}
+
+\subsection{Ablauf auf dem Client}
+In der Applikation instanziiert das Singleton \texttt{MessageLogger} einmalig über seine statische  \texttt{getInstance}-Methode mit der  \texttt{LoggerFactory} eine spezifische  \texttt{Logger}-Implementierung und stellt diese dann zur Verfügung. Diese  \texttt{Logger}-Implementation bietet dann Methoden um einen  \texttt{String} oder ein  \texttt{Throwable} mit dem entsprechenden  \texttt{LogLevel} zu loggen. 
+
+Damit die Verbindung asynchron ist, werden zuerst alle zu loggenden
+Meldungen mit einem eigenen Thread  \texttt{LogProducer} in eine Queue geschrieben. Des Weiteren ist ein Thread  \texttt{LogConsumer} dafür zuständig die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken. 
+
+Falls die Objekte nicht an den Server geschickt werden können, werden diese mit dem \\ \texttt{StringPersistor} in ein temporäres TextFile geschriben. Sobald die Verbindung wieder vorhanden ist, werden zuerst die Meldungen aus dem TextFile an den Server geschickt, bevor neue Meldungen übermittelt werden.
+
+\subsection{Ablauf auf dem Server}
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Für das Empfangen sind dabei mehere  \texttt{SocketHandler} (Standard-Konfiguration sind 10) zuständig. Jeder dieser  \texttt{SocketHandler} hält die Verbindung zu einem Client. In der Standard-Konfiguration sind so maximal 10 Clients gleichzeit möglich, welche mit dem gleichen Server kommunizieren. 
+
+Für jede erhaltene Nachricht wird ein eigener  \texttt{LogHandler} erstellt, welcher die Meldungen asynchron an den  \texttt{LogFileAdapter} zum Stringpersistor weitergibt und an den  \texttt{RmiRegistry}-Thread sendet. 
+
+Der Stringpersistor ermöglicht es
+dem  \texttt{LogHandler} (via  \texttt{LogFileAdapter}) über die  \texttt{save}-Methode eine Zeitinstanz mit einer Log-Message in ein Log-File zu schreiben. Das File wird durch die  \texttt{StringPersistor}-Methode  \texttt{setFile} ebenfalls vom  \texttt{LogFileAdapter} definiert. Die  \texttt{RmiRegistry} sendet die Meldung dann weiter an den RMI-Server, welcher sie an alle angemeldeten
+Clients verteilt.
+
+\newpage
+
+\section{Architektur und Designentscheide}
+Wir versuchten, möglichst viele bewährte objektorientierte Entwurfsmuster zu verwenden, um eine saubere Architektur unseres MessageLoggers zu erreichen.
+
+\subsection{Modelle und Sichten}
+\subsubsection{Packetdiagramm}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\linewidth]{img/Paketdiagramm}
+	\caption{Paketdiagramm}
+	\label{fig:paketdiagramm}
+\end{figure}
+
+\begin{landscape}
+	\subsubsection{Klassendiagramm}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.9\hsize]{img/UMLClassDiagram}
+		\caption{UML Klassendiagramm}
+		\label{fig:klassendiagramm}
+		\vspace{-1cm}
+	\end{figure}
+\end{landscape}
+
+\subsection{Entwurfsentscheide}
+Wir haben generell über das Projekt hinweg versucht uns an den Clean-Code-Prinzipien zu orientieren. Wir versuchten Vererbung zu vermeiden und das \flqq Favour Composition over Inheritance\frqq -Prinzip zu verfolgen. Dazu strebten wir an die Wiederverwendbarkeit zu erhöhen indem wir das DRY-Prinzip vor Augen hielten und die einzelnen Komponenten so zu gestalten, dass sie nur jeweils eine Aufgabe erfüllen (Seperation of Concerns).
+
+\subsubsection{Singleton-Pattern}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/SingletonPattern}
+	\caption{Singleton-Pattern}
+	\label{fig:singletonpattern}
+\end{figure}
+
+Das Singleton-Erzeugungsmuster wird für die Verwendung der Logger-Komponente durch das Spiel folgendermassen eingesetzt:
+Das Singleton ist die im Spiel-Package hinzugefügte Klasse \texttt{MessageLogger}. Diese hält ein privates, statisches Attribut \texttt{instance} vom Interface-Typ \texttt{Logger}. Dessen einmalige Instanziierung und der globale Zugriff darauf wird vom Singleton über die statische Methode \texttt{getInstance()} geboten. Die Klassen des Spiels, die etwas loggen
+sollen, halten diese Instanz in einer hinzugefügten privaten Klassenvariabel. Dadurch kann von überall aus im Spiel auf die Logger-Komponente zugegriffen werden.
+
+
+\subsubsection{Fabrikmethode-Pattern}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/FactoryPattern}
+	\caption{Factory-Pattern}
+	\label{fig:factorypattern}
+\end{figure}
+
+Bei der Erzeugung der \texttt{Logger}-Implementation, die vom Spiel verwendet wird, kommt die Fabrikmethode als Erzeugungsmuster zum Einsatz:
+
+Das Produkt ist vom Interface-Typ \texttt{Logger}. Der Erzeuger vom Interface-Typ \texttt{LoggerSetup} deklariert die Fabrikmethode \texttt{getLoggerSetup}, um ein solches Produkt zu erzeugen. Das konkrete Produkt \texttt{BaseLogger} implementiert die Produkt-Schnittstelle (\texttt{Logger}-Interface).
+Der konkrete Erzeuger \texttt{LoggerFactory} überschreibt die Fabrikmethode \texttt{getLoggerSetup}, um das konkrete Produkt, also den \texttt{BaseLogger}
+zu erzeugen.
+
+\subsubsection{Strategie-Pattern 1}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/StrategyPattern}
+	\caption{Strategy Pattern}
+	\label{fig:strategypattern}
+\end{figure}
+
+Bei der Einbindung der Logger-Komponente im Spiel wurde das Strategie-Verhaltensmuster wie folgt eingesetzt:
+Der Klient ist das Spiel. Den Kontext bildet die im Spiel-Package zusätzlich eingefügte Klasse \texttt{MessageLogger}. Die Strategie ist vom
+Interface-Typ \texttt{Logger} und wird in der Instanz-Variabel \texttt{instance}
+vom Kontext gehalten. Dies ermöglicht es, die Strategie mit einer anderen Logger-Komponente auszutauschen.
+
+\subsubsection{Strategie-Pattern 2}
+Das Strategie-Pattern wurde ebenfalls verwendet, um die \texttt{LogMessage}-Objekte in verschiedenen String-Formaten abspeichern zu können. Der \texttt{LogFileAdapter} verwendet das \\ \texttt{LogSemicolonConverterStrategy},
+welches das \texttt{LogConverterStrategy}-Interface implementiert. Im folgenden Code-Abschnitt sieht man den Konstruktor der Klasse \texttt{LogFileAdapter}, welche auch das Attribut \texttt{private LogConverterStrategy strategy} besitzt.
+
+\begin{minted}{java}
+public LogFileAdapter(String filename) throws ClassNotFoundException,
+	IllegalAccessException, InstantiationException {
+	
+	Class persistor = Class.forName("ch.hslu.vsk.g01.stringpersistor.
+		StringPersistor");
+	this.stringPersistor = (StringPersistor) persistor.newInstance();
+	
+	this.file = new File(filename);
+	this.stringPersistor.setFile(this.file);
+	
+	this.strategy = new LogSemicolonConverterStrategy();	
+}	
+\end{minted}
+
+\newpage
+
+Anstelle der \texttt{LogSemicolonConverterStrategy}-Klasse könnte der \texttt{LogFileAdapter} die
+Klasse \texttt{LogSlashConverterStrategy} verwenden, welches ebenfalls das Interface \texttt{LogConverterStrategy} implementiert. Dies müsste man dann nur im Konstruktor des \texttt{LogFileAdapter} ändern.
+
+\begin{minted}{java}
+this.strategy = new LogSlashSemicolonConverterStrategy();
+\end{minted}
+
+\subsubsection{Adapter-Pattern}
+Das Adapter-Muster ist ein Strukturmuster und übersetzt eine Schnittstelle in eine andere. Dadurch kann die Kommunikation einer Klasse zu einer inkompatiblen Schnittstellen ermöglicht werden und gleichzeitig eine lose Kopplung gewährleisten.
+
+\textbf{Akteure:}
+\begin{itemize}
+	\item \texttt{LogConsumer} verwendet \texttt{LogFileAdapter}
+	\item \texttt{LogHandler} verwendet \texttt{LogFileAdapter}
+	\item \texttt{LogFileAdapter} adaptiert \texttt{StringPersistor}
+\end{itemize}
+
+Wir verwenden das Adapter Pattern an zwei Stellen in unserem MessageLogger:
+
+\begin{enumerate}
+	\item Ist der Server vom Client nicht erreichbar, müssen die \texttt{LogMessage}-Objekte vorübergehend beim Client gespeichert werden. Der Client macht dies, indem der \texttt{LogConsumer} den \texttt{LogFileAdapter} verwendet, um die \texttt{LogMessage}-Objekte in ein lokales Textfile zu schreiben. Der \texttt{LogFileAdapter} adaptiert den \texttt{StringPersistor} mit der Methode \\ \texttt{void writeLogMessage(LogMessage logMessage)}. Der \texttt{StringPersistor} schreibt die Nachrichten dann mit der Methode \texttt{void save(Instant timestamp, String payload)} effektiv in das TextFile. Sobald die Verbindung wieder hergestellt wurde nutzt der LogConsumer den \texttt{LogFileAdapter} erneut, um mit der Methode \\ \texttt{List<LogMessage> readLogMessages()} alle Nachrichten wieder aus dem \texttt{File} zu lesen. Hier wird die \texttt{StringPersistor}-Methode \texttt{List<PersistedString> get(int i)} adaptiert, welche die Nachrichten effektiv aus dem \texttt{File} liest.
+\end{enumerate}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/AdapterPatternLC}
+	\caption{Erste Verwendung des Adapter Patterns}
+	\label{fig:adapterpatternlc}
+\end{figure}
+
+\begin{enumerate}	
+	\setcounter{enumi}{1}
+	\item Für die Übertragung der \texttt{LogMessage} vom \texttt{LogHandler} zum \texttt{StringPersistor}, verwenden wir ebenfalls das Adapter-Modell (\texttt{LogFileAdapter}). So kann die Implementation der \texttt{StringPersistor}-Klasse ungeändert bleiben und wir können eine angepasste Implementation für den \texttt{LogHandler} erstellen. Dadurch erhalten wir die effektiv gewünschte Zielschnittstelle und die \texttt{LogMessage}-Objekte werden wie gewollt auf serverseite in ein \texttt{LogMessage-File} geschrieben.
+\end{enumerate}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/AdapterPatternLH}
+	\caption{Zweite Verwendung des Adapter Patterns}
+	\label{fig:adapterpatternlh}
+\end{figure}
+
+\subsubsection{Konfigurationsdateien}
+Die Konfigurationsdateien entsprechen einem Java-Properties-File. Wie ein solches File aufgebaut ist kann man unter der folgenden Adresse nachlesen: \url{https://de.wikipedia.org/wiki/Java-Properties-Datei}. In diesem Projekt werden die zwei Konfigurationsdateien \texttt{client.properties} und \texttt{server.properties} eingesetzt, welche zur Konfiguration des Loggers im Game und des Servers verwendet werden.
+
+\subsection{Diskussionen}
+
+\subsubsection{Serialisierung}
+\textbf{Überlegungen zum Mengengerust der Datenübertragung}
+
+Objekte der Klasse LogMessage mit den Attributen. Die Anzahl davon kann grösser als 1000 LogMessages/s sein.
+
+\textbf{Konzepte und Konstrukte aus dem Input Synchronisation}
+
+\begin{tight_enumerate}
+	\item Messages via TCP/IP ubertragen
+	\item Messages speichern
+	\item Messages anzeigen
+	\item Spezialfalle
+\end{tight_enumerate}
+
+In unserem Projekt werden die \texttt{LogMessages} serialisiert über die TCP/IP Schnittstelle übertragen. Dies geschieht automatisch mit den Klassen \texttt{ObjectInputStream} / \texttt{ObjectOutputStream}.
+
+\subsubsection{Message Passing}
+\textbf{Allgemein}
+\begin{tight_enumerate}
+	\item Wie konnten die im VS\_03\_MessagePassing vorgestellten Implementationen der Message Passing Protokolle zum Einsatz kommen?
+	\item warum Sie eine der vorgestellten Codeskizzen des Message Passing ubernehmen und einsetzen oder
+	\item warum Sie Message Passing in dieser Art nicht einsetzen
+\end{tight_enumerate}
+
+Um die Anforderungen abzudecken genügt es, ein einzelnes Objekt als Message zu übergeben.
+
+\textbf{Welchen Mehrwert ergibt ein Message Passing Protokoll im Projekt?}
+
+Das Erweitern von unterschiedlichen Nachrichten vereinfacht sich enorm
+
+\textbf{Andere Möglichkeiten wie Sie ein Message Passing Protokoll (in Ihrem Projekt) umsetzen? Welche?}
+
+Meldungen als universell ausgelagerte Objekte. Zum Beispiel XML.
+
+\subsubsection{RMI}
+\textbf{Wie sieht die proprietare RMI Schnittstelle aus? Dokumentieren Sie diese!}
+
+Siehe dazu das Unterkapitel "RMI-Verbindung`` im Kapitel "4 Implementation von Komponenten``
+
+\textbf{Wie sieht der RMI Viewer aus?}
+
+Der Viewer besteht aus einem \texttt{JFrame}, welches ein \texttt{JScrollPanel} und eine \texttt{JTable} enthält.
+Siehe dazu das Unterkapitel "Logger-Viewer`` im Kapitel "4 Implementation von Komponenten``
+
+\textbf{Wie funktioniert das Push-Prinzip mit RMI und wie lasst sich dieses implementieren?}
+
+Jeder Client registriert sich bei einem Server mit einem Callback. Sobald dann
+der Server eine Nachricht an alle Clients senden möchte, iteriert er durch die
+Liste der Callbacks und ruft auf jedem Callback eine definierte Methode auf.
+
+\textbf{Welche Komponenten sind fur die RMI Kommunikation notwendig?}
+
+\begin{tight_enumerate}
+	\item RMI-Registry (stellt die RMI-Infratstruktur zur Verfügung)
+	\item RMI-Service-Provider (stellt einen Service bereit)
+	\item RMI-Service-Consumer (konsumiert einen Service)
+\end{tight_enumerate}
+
+\textbf{Welche Einstellungen mussen im Netzwerk gemacht werden?}
+
+Eingehende Verbindungen auf den Port der RMI-Registry müssen erlaubt sein.
+
+\subsubsection{Uhren Synchronisation}
+\textbf{Wo konnten logische Uhren zum Einsatz kommen?}
+
+\begin{tight_enumerate}
+	\item Begrunden Sie in jedem Fall Ihre Antwort,
+	\item warum Sie logische Uhren einsetzen oder
+	\item warum Sie logische Uhren nicht einsetzen
+\end{tight_enumerate}
+
+Unser Projekt setzt logische Uhren nicht ein, da dies keine Anforderung ist.
+
+\textbf{Welchen Mehrwert ergeben die logischen Uhren im Projekt?}
+
+Die Nachvollziehbarkeit der Protokolle ist in allen Fällen gegeben. Jedes System "spricht" von derselben Zeit.
+
+\textbf{Welche logische Uhr (mit Lamport-Zeitstempel oder Vektor-Zeitstempel) ist sinnvoll, bezuglich des Mehrwerts vs. Aufwand?}
+
+Ein Lamport-Zeitstempel würde für unser Projekt genügen, da nicht mehrere unterschiedliche Objekte abhängig voneinander sind.
+
+\newpage
+
+\section{Schnittstellen}
+\subsection{Externe Schnittstellen}
+Die folgenden Schnittstellen wurden uns vorgeschrieben.
+
+\begin{tight_enumerate}
+	\item \texttt{Logger}
+	\item \texttt{LoggerSetup}
+	\item \texttt{LogLevel}
+	\item \texttt{StringPersistor}
+\end{tight_enumerate}
+
+\subsubsection{Logger}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/LoggerInterface}
+	\caption{UML Diagramm des Logger Interface}
+	\label{fig:loggerinterface}
+\end{figure}
+
+Das \texttt{Logger}-Interface stellt drei Methoden zur Verfügung. Die Methode \texttt{setReportLevel} ist dazu da, um einzustellen, ab welchem LogLevel die Nachrichten an den Server gesendet werden. Zusätzlich wird die Methode \texttt{log} definiert, für welche eine Überladung existiert. Mit der einen Variante lässt sich eine Nachricht als \texttt{String} loggen und mit der anderen ein Objekt vom Typ \texttt{Throwable}.
+
+\texttt{> Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)}
+
+\subsubsection{LoggerSetup}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/LoggerSetup}
+	\caption{UML Diagramm des Logger Setup Interface}
+	\label{fig:loggersetup}
+\end{figure}
+
+Das \texttt{LoggerSetup}-Interface stellt zwei Möglichkeiten zur Verfügung um einen Logger zu erstellen. Bei beiden Varianten muss eine Adresse als \texttt{String} und eine Port-Nummer als \texttt{Integer} übergeben werden. Als drittes kann bei einer Variante noch einen Namen für den Logger übergeben werden. Die andere Variante geht von einem Standard-Wert aus, welcher in der Implementierung festgelegt werden kann.
+
+\texttt{> Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)}
+
+\subsubsection{LogLevel}
+\begin{tabular}{|l|l|}
+	\hline \textbf{LogLevel} & \textbf{Code} \\ \hline
+	\texttt{DEBUG} & 10 \\ \hline
+	\texttt{INFO} & 20 \\ \hline
+	\texttt{WARN} & 30 \\ \hline
+	\texttt{ERROR} & 40 \\ \hline
+	\texttt{CRITICAL} & 50 \\ \hline
+\end{tabular}
+
+In der LoggerInterface-Komponente sind ebenfalls die verschiedenen \texttt{LogLevel} definiert.
+Diese Definition wurde über eine Java-Enum gelöst. Damit die \texttt{LogLevel} untereinander
+verglichen werden können ist jedem Level noch einen Code zugeordnet. Je höher der Code
+ist, desto schlimmer ist eine Nachricht einzustufen.
+
+\texttt{> Verwendete Version: 1.0.0 (ch.hslu.loggerinterface)}
+
+\subsubsection{StringPersistor}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/StringPersistorInterface}
+	\caption{UML Diagramm des String Persistor Interface}
+	\label{fig:stringpersistorinterface}
+\end{figure}
+
+Das \texttt{StringPersistor}-Interface stellt die Methode \texttt{void setFile(File file)} zur Verfügung, um das \texttt{File} festzulegen, in welches die \texttt{LogMessage}-Objekte geschrieben werden. Die Methode \texttt{void save(Instant timestamp, String payload)} schreibt die \texttt{LogMessage}-Objekte mit einem Timestamp vom Typ \texttt{Instant} in das \texttt{File}. Die Methode \texttt{List<PersistedString> get(int count)} holt die gewünschte Anzahl (= \texttt{int i}) aus dem \texttt{File} und fügt sie in eine \texttt{List<PersistedString>}.
+
+\texttt{> Verwendete Version: 4.0.0 (ch.hslu.vsk.stringpersistor-api)}
+
+\subsection{Interne Schnittstellen}
+Die folgenden Schnittstellen wurden von uns vorgeschrieben.
+
+\begin{tight_enumerate}	
+	\item \texttt{LogMessage}
+	\item \texttt{LogAdapter}
+	\item \texttt{LogConverterStrategy}
+	\item \texttt{client.properties}
+	\item \texttt{server.properties}
+	\item TCP/IP Schnittstelle
+\end{tight_enumerate}
+
+\subsubsection{LogMessage}
+Die \texttt{LogMessage} speichert Meldungen mit zusätzlichen Attributen. Folgende Tabelle gibt einen Überblick über die Klasse.
+
+\begin{tabular}{|l|l|l|}
+	\hline \textbf{Attribut}   & \textbf{Beschreibung}             & \textbf{Datentyp} \\ \hline
+	level      & Log Stufe                & LogLevel \\ \hline
+	message    & Nachricht                & String   \\ \hline
+	createdAt  & Zeitpunkt der Erstellung & Instant  \\ \hline
+	receivedAt & Zeitpunkt des Erhaltens  & Instant  \\ \hline
+\end{tabular}
+
+\subsubsection{LogAdapter}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/LogAdapter}
+	\caption{UML Diagramm des Log Adapter Interface}
+	\label{fig:logadapter}
+\end{figure}
+
+
+Der \texttt{LogAdapter} stellt die Schnittstelle vom Server und vom Client zum \texttt{Stringpersistor} her und versteht sich somit als Adapter.  Der Adapter definiert das \texttt{File} und das Format der zu speichernden \texttt{LogMessage}-Objekte. Das \texttt{LogAdapter}-Interface verfügt über die Schreibmethode \texttt{void writeLogMessages(LogMessage logMessage)}. Es schreibt auch die Implementation der Methode \texttt{List<LogMessage> readLogMessages()} und \texttt{void deleteFile()} vor.
+
+Der Server nutzt diesen Adapter über die Implementation \texttt{LogFileAdapter}, um die LogMessages (unabhängig von der Implementation des StringPersistors) dem StringPersistor zu übergeben. Der \texttt{LogConsumer} verwendet ebenfalls diesen Adapter, um bei Verbindungsunterbruch zwischen dem Client und dem Server, die \texttt{LogMessage}-Objekte in ein lokales \texttt{File} zu schreiben. Nach erneutem Verbindungsaufbau werden diese \texttt{LogMessage}-Objekte wieder aus diesem \texttt{File} gelesen mit der Methode \texttt{List<LogMessage> readLogMessages()}. Die Methode \texttt{void deleteFile()} wird dafür verwendet, das nun gelesene \texttt{File} zu entfernen.
+
+\subsubsection{LogConverterStrategy}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/LogConverterStrategy-Klasse}
+	\caption{UML Diagramm des Log Consumer Strategy Interface}
+	\label{fig:logconverterstrategy-klasse}
+\end{figure}
+
+\newpage
+
+Der \texttt{LogConverterStrategy} stellt die beiden Methoden
+
+\begin{enumerate}
+	\item \texttt{public String logMessageToString(LogMessage message)}
+	\item \texttt{public LogMessage getLogMessageFromString(String message)}
+\end{enumerate}
+
+zur Verfügung. Damit kann eine Komponente \texttt{LogMessage}-Objekte in ein File schreiben, ohne dass er sich darum kümmern muss, wie die Nachricht in das File gespeichert wird. Es erfüllt die Kriterien des Strategy-Patterns.
+
+\subsubsection{client.properties}
+\begin{tabular}{|l|l|}
+	\hline \textbf{Schlüssel} & \textbf{Standard-Wert}               \\ \hline
+	fqn       & ch.hslu.vsk.g01.loggercomponent.LoggerFactory \\ \hline
+	server    & 127.0.0.1                                     \\ \hline
+	port      & 54321                                         \\ \hline
+	name      & Unnamed                                       \\ \hline
+\end{tabular}
+
+Das File \texttt{client.properties} ist dazu da, um im Game den Logger zu konfigurieren. Bei Starten des Games wird im gleichen Ordner nach dieser Datei gesucht und die Werte eingelesen. Falls die Konfigurationsdatei nicht existiert oder fehlerhaft ist, werden die oben definierten Standard-Werte verwendet.
+
+Mit dem Schlüssel \texttt{fqn} kann definert werden, welche Klasse im Classpath das \texttt{LoggerSetup}-Interface implementiert und somit instanziert werden soll. Über die beiden Schlüssel \texttt{server} und \texttt{port} wird dann festgelegt auf welche Adresse und auf welchen Port sich der LoggerServer befindet. Schlussendlich kann mit dem Schlüssel \texttt{name} noch der Name des Loggers festgelegt werden.
+
+\subsubsection{server.properties}
+\begin{tabular}{|l|l|}
+	\hline \textbf{Schlüssel} & \textbf{Standard-Wert} \\ \hline
+	host      & 127.0.0.1     \\ \hline
+	port      & 54321         \\ \hline
+	amount    & 10            \\ \hline 
+\end{tabular}
+
+Das File \texttt{server.properties} ist dazu da, um den LoggerServer zu konfigurieren. Bei Starten des Servers wird im gleichen Ordner nach dieser Datei gesucht und die Werte eingelesen. Falls die Konfigurationsdatei nicht existiert oder fehlerhaft ist, werden die oben definierten Standard-Werte verwendet.
+
+Mit dem Schlüssel \texttt{host} kann definert werden, an welche Adresse der Server gebunden werden soll. Über den Schlüssel \texttt{port} lässt sich dann noch der Port definieren. Falls der Port bereits besetzt ist kommt es zu einer Fehlermeldung und der Server startet nicht. Über den Schlüssel \texttt{amount} wird definiert wie viele Clients gleichzeitig auf den Server zugreifen können. Falls alle Plätze besetzt sind und ein weiterer Client zugreifen will, muss er warten bis ein Client die Verbindung beendet und somit ein Platz frei wird.
+
+\subsubsection{TCP/IP Schnittstelle}
+Der Logger beinhaltet die Funktion \texttt{log}, welche eine \texttt{LogMessage} an den Server schickt. Damit die Verbindung asynchron ist, werden zuerst alles zu loggenden Meldungen mit einem eigenen Thread \texttt{LogProducer} in eine Queue geschrieben. Desweiteren ist ein Thread \texttt{LogConsumer} dafür zuständig, die Queue zu lesen und die Meldungen über eine TCP Verbindung zum Server zu schicken.
+
+Die Übertragung der Meldungen geschieht über den \texttt{ObjectInputStream} / \texttt{ObjectOutputStream}, welche die serialisierbare Klasse \texttt{LogMessage} als Objekte überträgt.
+
+\newpage
+
+\section{Implementation von Komponenten}
+\subsection{LoggerComponent (Client)}
+Der Logger besteht hauptsächlich aus der Klasse \texttt{BaseLogger}, welcher das \texttt{Logger}-Interface implementiert. Er bietet die Methode \texttt{log} an, welche mit einem \texttt{LogLevel} als erstes Argument und einer Nachricht als String, aufgerufen werden kann um etwas zu loggen. Zusätzlich steht noch eine überladene Methode bereit, welche als zweites Argument ein \texttt{Throwable} akzeptiert, was es ermöglicht auch Exceptions zu loggen.
+
+Durch die Instanziierung eines Loggers wird sofort ein \texttt{LoggerSocket} erstellt und gestartet. Er enthält eine Queue mit den Meldungen, welche an den Server gesendet werden sollten. Er bietet ausserdem die Methode \texttt{queueLogMessage}, welche asynchron eine \texttt{LogMessage} in die Queue speichert. Beim Starten des Sockets wird ein \texttt{LogConsumer}-Thread gestartet, welcher ständig die Queue abarbeitet und die enthaltenen Nachrichten via einen \texttt{ObjectOutputStream} über einen TCP-Socket an den Server sendet. Falls das Senden zu einer \texttt{IOException} Exception führt, werden die Meldungen über den \texttt{LogAdapter} und dann dem \texttt{StringPersistor} in ein lokales temporäres TextFile geschrieben. Wenn die Verbindung wieder hergestellt ist, wird überprüft, ob es \texttt{LogMessages} gibt, welche in das temporäre TextFile geschrieben wurde. Falls ja, werden diese zuerst geschickt. Nachdem alle Meldungen übermittelt wurden, wird das TextFile gelöscht. Erst dann wird mit dem regulären Senden weitergefahren.
+
+Achtung: Falls die Verbindung während dem Senden der Meldungen aus dem temporären TextFile unterbrochen wird, kann es schlussendlich zu redundanten Meldungen auf dem Server führen.
+
+\subsection{LoggerServer}
+Der Server stellt einen Socket bereit und empfängt Meldungen vom Client. Dazu werden beim Starten des Servers mehrere \texttt{SocketHandler} erstellt, welche über einen \texttt{ExecutorService} als eigenständige Threads gestartet werden. Die Anzahl wird durch den Konfigurationsparameter \texttt{amount} im \texttt{server.properties} festgelegt. Jeder dieser \texttt{SocketHandler} ist für die Kommunikation mit einem Logger-Client zuständig und hat dabei Zugriff auf den ServerSocket, den LogAdapter und die RmiRegistry. Für jede erhaltene Nachricht, wird ein eigener \texttt{LogHandler} erstellt, welcher die Meldungen asynchron an den Adapter zum Stringpersistor weitergibt und die Meldung an die \texttt{RmiRegistry} weiterleitet.
+
+\subsubsection{LoggerServer - Class}
+Der LoggerServer besitzt eine \texttt{main} Methode, welche für das Starten des Servers verantwortlich ist. Die Klasse bestizt ausserdem drei wichtige lokale Konstanten.
+
+\begin{enumerate}
+	\item ExecutorService
+\end{enumerate}
+
+Dies ist ein ThreadPool, welcher für die einzelnen \texttt{LogHandler} Threads abarbeitet. Genauer handelt es sich um einen \texttt{newFixedThreadPool} mit fünf Threads.
+
+\begin{enumerate}
+	\setcounter{enumi}{1}
+	\item LogFileAdapter
+\end{enumerate}
+
+Dies ist die Referenz zum Adapter, welche einmalig erzeugt wird und jedem \texttt{LogHandler} zur Verwendung mitgegeben wird. Es ist die Schnittstelle zum \texttt{StringPersistor}.
+
+\begin{enumerate}
+	\setcounter{enumi}{2}
+	\item ServerSocket
+\end{enumerate} 
+
+Der Socket ist die Anlaufstelle des Servers. TCP Packete werden damit empfangen. Der LoggerServer erstellt für jede erhaltene Nachricht einen eigenen LogHandler. Der ServerSocket ist mit der Klasse \texttt{LoggerServerSocket} implementiert.
+
+\subsubsection{LoggerServerSocket - Class}
+Der LoggerServerSocket erstellt einen ServerSocket. Dafür liest er die Konfiguarionen mit der Methode \texttt{loadConfigFile()} aus dem Konfigurationsfile. Falls das File \texttt{config.properties} nicht existiert, werden standard Werte verwendet. Mit diesen Werten wird ein ServerSocket erstellt. Der Socket wird mit der statischen Methode \texttt{create()} erstellt.
+
+Die Standard Werte sind wie folgt definiert:
+
+\begin{tabular}{|l|l|}
+	\hline \textbf{Name}   & \textbf{Value}     \\ \hline
+	host   & 127.0.0.1 \\ \hline
+	port   & 54321     \\ \hline
+	amount & 10        \\ \hline
+\end{tabular}
+
+\subsubsection{LogHandler - Class}
+Der LogHandler wird vom LoggerServer erstellt. Dieser ist für die asynchrone Weitergabe an den \texttt{LogFileAdapter} verantwortlich. Dementsprechend ist die impementierung auch einfach gehalten. Die Run-Methode sieht wie folgt aus:
+
+\begin{minted}{java}
+public void run() {
+	logFileAdapter.writeLogMessage(message);
+}
+\end{minted}
+
+\subsection{StringPersistor}
+In der StringPersistor-Komponente wird dafür gesorgt, dass die \texttt{LogMessage}-Objekte in ein \texttt{File} geschrieben und aus demselben \texttt{File} wieder herausgelesen werden können.
+
+\subsubsection{StringPersistor - Class}
+Der Stringpersistor schreibt eine Zeitinstanz mit einer Log-Message in ein Log-File. Dazu muss der LogHandler im  \texttt{StringPersistor} auch das Log-File an den StringPersistor übergeben mit der Methode  \texttt{void setFile(final File file)}. Mit der Methode  \texttt{void save(final Instance instance, final String s)} wird die Zeitinstanz und Log-Message in das zuvor festgelegte Log-File gespeichert. Die Methode  \texttt{List<PersistedString> get(int i)} liefert die mit dem Parameter  \texttt{i} gewünschte Anzahl letzten Log-Einträge als  \texttt{List} des Typs  \texttt{PersistedString} aus dem Log-File zurück.
+
+\subsubsection{LogFileAdapter - Class}
+Der  \texttt{LogFileAdapter} implementiert das Interface  \texttt{LogAdapter} und überschreibt die Methoden  \texttt{writeLogMessage(LogMessage logMessage)} und die Methode  \texttt{List<LogMessage> readLogMessages()}. Die Methoden haben dieselbe Funktion, wie die Methoden der  \texttt{StringPersistor}-Klasse ( \texttt{save} und  \texttt{get}), sind jedoch auf den  \texttt{LogHandler} angepasst und lesen im Gegensatz zum  \texttt{StringPersistor} \textbf{alle}  \texttt{LogMessage}-Objekte aus dem  \texttt{File}. Der Rückgabewert der  \texttt{LogFileAdapter}-Klasse ist  \texttt{List<LogMessage>}.
+
+\subsubsection{LogFile.txt}
+Das \texttt{LogFile.txt} ist das Text-Dokument, in welches alle \texttt{LogMessage}-Objekte gespeichert werden.Es wird durch den \texttt{LogFileAdapter} erstellt und dem \texttt{StringPersistor} übergeben. Danach werden die \texttt{LogMessage}-Objekte über den \texttt{StringPersistor} mit Hilfe des \texttt{LogFileAdapter} in das \texttt{LogFile.txt}.
+
+\textbf{Format} \\
+Das Format mit dem die \texttt{LogMessage}-Objekte in das \texttt{LogFile.txt} geschrieben werden sieht folgendermassen aus.
+
+\begin{tight_enumerate}
+	\item Datum \& Zeit vom Erhalten der \texttt{LogMessage}
+	\item Datum \& Zeit vom Erstellen der \texttt{LogMessage}
+	\item LogLevel der \texttt{LogMessage}
+	\item Nachricht in der \texttt{LogMessage}
+\end{tight_enumerate}
+
+\begin{minted}{java}
+String message = logMessage.getReceivedAt() + ";"
++ logMessage.getCreatedAt() + ";"
++ logMessage.getLogLevel() + ";"
++ logMessage.getMessage();
+\end{minted}
+
+\subsection{LoggerViewer}
+Da keine Anforderunegn an den LoggerViewer existieren, wurde er sehr simpel aufgebaut. Der Viewer besteht aus einem \texttt{JFrame}, in welchem sich ein  \texttt{JScrollPane} und darin eine  \texttt{JTable}. Die Daten für die Tabelle werden inem einem  \texttt{DefaultTableModel} abgelegt, welches mit der Tabelle verknüpft wurde.
+
+\newpage
+
+\subsubsection{RMI-Verbindung}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/RMI-Connection}
+	\caption{RMI Verbindung}
+	\label{fig:rmi-connection}
+\end{figure}
+
+\textbf{LoggerServer} \\
+Während dem Starten des LoggerServer wird ein \texttt{RmiRegistry} Objekt erzeugt und über einen Executor-Service gestartet. Sobald die \texttt{RmiRegistry} ausgeführt wird, erstellt sie einen \texttt{RmiServer} und stellt dieses Objekt über RMI zur Verfügung. Der \texttt{RmiServer} bietet dann die Methode \texttt{register} an, bei welcher sich ein \texttt{LoggerRmiClient} anmelden kann, um über neue LogMessages informiert zu werden. Sobald beim LoggerSever eine neue Nachricht eintrifft, wird dann die \texttt{writeLogMessage} Methode auf der \texttt{RmiRegistry} aufgerufen. Diese leitet dann den Aufruf an die Methode \texttt{writeLogMessage} des \texttt{RmiServer}-Objektes weiter. Der \texttt{RmiServer} geht dann durch die Liste mit den angemeldeten \texttt{LoggerRmiClient} und ruft auf jedem Client die Methode \texttt{logMessage} auf.
+
+\textbf{LoggerViewer} \\
+Zur Kommunikation über RMI wird die Klasse \texttt{RmiConnection} als \texttt{Runnable} in einem zweiter Thread gestartet. Soabald das \texttt{Runnable} gestartet wird, wird ein \texttt{ViewerRmiClient}, welcher dann versucht eine Verbindung zum RMI-Server aufzubauen und sich selber als Client zu registrieren. In der Klasse \texttt{ViewerRmiClient} ist dann auch die Methode \texttt{logMessage} definiert, welche aufgerufen wird, sobald der Server eine neue Nachricht erhält. Diese Methode erstellt dann eine neue Zeile in der LoggerViewer-Tabelle mit der Werten aus der Nachricht und fügt sie ganz oben an der Tabelle an.
+
+\section{Verwendung des Loggers}
+\subsection{Einbinden auf einem Client}
+Um den Logger in einer Client-Applikation in Betrieb zu nehmen, muss dafür mit der \texttt{LoggerFactory} ein \texttt{LoggerSetup}-Objekt geholt werden. Hierfür muss der Factory-Methode \texttt{getLoggerSetup} der Fully Qualified Class Name einer Klasse übergeben werden, die das \texttt{LoggerSetup} Interface implementiert. Über das \texttt{LoggerSetup}-Objekt können dann verschiedene \texttt{Logger} erstellt werden.
+
+Zum besseren Verständnis folgt eine Beispiel-Implementierung:
+
+\begin{minted}{java}
+String fqn = "ch.hslu.vsk.g01.loggercomponent.LoggerFactory";
+String server = "127.0.0.1";
+Integer port = 54321;
+
+try {
+	LoggerSetup loggerFactory = LoggerFactory.getLoggerSetup(fqn);
+	Logger logger = loggerFactory.createLogger(server, port);
+} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+	// Implement error handling here
+}
+\end{minted}
+
+\subsection{GameOfLife Einbindung}
+Der GameOfLife Applikation wurde eine neue Klasse hinzugefügt, das \texttt{MessageLogger}-Singleton. Um den Logger in Betrieb zu nehmen wird einmalig über dessen \texttt{getInstance}-Methode mit der \texttt{LoggerFactory} eine spezifische Logger-Implementierung instanziiert. Für die Instanziierung wird die Konfigurationsdatei \texttt{config.properties} eingelesen, worin sich der Fully Qualified Class Name der \texttt{LoggerFactory}, die IP Adresse des Servers und die Portnummer in dieser Reihenfolge befinden muss. Mit dieser Konfigurationsdatei lässt sich die Logger-Implementierung austauschen. Zur Veranschaulichung folgt der mögliche Inhalt von \texttt{config.properties}:
+
+\begin{verbatim}
+fqn=ch.hslu.vsk.g01.loggercomponent.LoggerFactory
+server=127.0.0.1
+port=54321
+\end{verbatim}
+
+Danach kann die Applikation dann mit der statischen Methode \texttt{getInstance} des Singletons auf die Logger-Implementierung zugreifen. Mit dessen statischer \texttt{log} Methode lässt sich nun auf einem \texttt{LogLevel} entweder ein \texttt{String} oder \texttt{Throwable} loggen.
+
+Die Applikation wurden ausserdem um Aufrufe dieser \texttt{log} Methode mit entsprechenden LogLevels erweitert. Die \texttt{LogLevels} finden folgende Verwendung:
+
+\begin{tabularx}{\textwidth}{|l|X|}
+	\hline \textbf{LogLevel} & \textbf{Verwendung} \\ \hline
+	\texttt{DEBUG} & Jegliche Information, die in irgendeiner Form nützlich sein könnte, wie Methodenaufrufe, Parameterwerte, etc.       \\ \hline
+	\texttt{INFO} & Information über wichtige Ereignisse im Spiel. Jeglicher User-Input wird mit diesem Level geloggt.                  \\  \hline
+	\texttt{WARN} & Warnungen, wenn etwas passiert, das so nicht geplant war. Das Spiel läuft jedoch weiterhin.                         \\  \hline
+	\texttt{ERROR} & Fehler, von welchen das System sich wieder erholen kann, wie z.B. Fehler beim Laden/Speichern einer Shape.          \\  \hline
+	\texttt{CRITICAL} & Fehler, von welchen das System sich nicht erholen kann und beendet werden muss, z.B. bei einer InterruptedException \\  \hline
+\end{tabularx}
+
+\newpage
+
+\section{Testing}
+Die Funktionalität sollte so gut wie möglich durch Unit-Tests, auf welche im Kapitel 6.1 weiter eingegangen wird, abgedeckt werden. Es wurde entschieden, die Integration der Komponenten in die GameOfLife Applikation manuell zu testen. Auch die Übertragung der Daten vom Client zum Server und der LoggerViewer werden durch manuelle Test abgedeckt.
+
+\subsection{Unit Testing}
+\subsubsection{LoggerCommon}
+Zur Verifikation der \texttt{LogMessage}-Klasse gibt es einen \texttt{LogMessageTest}, welcher das wichtigste Verhalten der Klasse überprüft.
+
+\subsubsection{LoggerComponent}
+Der \texttt{BaseLogger} wird durch den \texttt{BaseLoggerTest} überprüft. Damit nicht ständig einen TCP-Socket aufgemacht werden muss, verwendet der der Test die Klasse \texttt{FakeBaseLogger}, welche von \texttt{BaseLogger} abgeleitet wird. Darin wird vorallem die Methode \texttt{createSocket} überschrieben und es wird ein \texttt{FakeLoggerSocket} erstellt. Ausserdem bietet die abgeleitete Klasse noch ein paar Getters und andere Methoden zur Überprüfung der Daten. Für die Verifikation der anderen Klassen in diesem Modul werden manuelle Tests verwendet, da das Testen einer TCP-Verbindung nicht so trivial ist.
+
+\subsubsection{LogFileAdapter}
+Der \texttt{LogFileAdapter} hat die Methoden \texttt{void writeLogMessage(LogMessage logMessage)}, \texttt{List<LogMessage> readLogMessages()} und \texttt{deleteFile()}. Diese werden anhand von JUnit-Tests getestet.
+
+\textbf{Test von \texttt{void writeLogMessage(LogMessage logMessage)}} \\
+Zuerst wird ein \texttt{File}, ein \texttt{LogFileAdapter} und eine \texttt{LogMessage} instanziiert. Der \texttt{LogMessage} wird ein \texttt{LogLevel} und eine Message des Typs \texttt{String} übergeben. In einem PreAssert mit der Methode \texttt{assertEquals(Boolean expected, Boolean actual)} wird geprüft, ob das erstellte File leer ist, da es noch keine \texttt{LogMessage} enthalten darf. Danach wird mit der Methode \texttt{void writeLogMessage(LogMessage logMessage)} die \texttt{LogMessage} in das zuvor erstellte \texttt{File} geschrieben. Jetzt kommt der Assert wo wieder mithilfe der Methode \texttt{assertEquals(Boolean expected, Boolean actual)} geprüft wird, ob das Dokument nun \textbf{nicht leer} ist. Am Ende wird das erstellte \texttt{File} gelöscht mit der \texttt{File}-Methode \texttt{deleteFile()}.
+
+\textbf{Test von \texttt{List<LogMessage> readLogMessages()}} \\
+Diese Methode wird gleich aufgebaut wie der Test von \texttt{writeLogMessage}. Danach wird einfach noch die \texttt{readLogMessages()}-Methode ausgeführt und ein Vergleich gemacht, ob die Anzahl \texttt{LogMessage}-Objekte in der zurückgegebenen Liste, der ensprechen, die in das \texttt{File} geschrieben wurden.
+
+Die Methode \texttt{deleteFile()} wird immer am Ende der Tests ausgeführt. Danach kann man überprüfen, ob das \texttt{File} tatsächlich gelöscht wurde.
+
+\subsubsection{StringPersistor}
+Der \texttt{StringPersistor} wird anhand eines JUnit-Tests \texttt{StringPersistorTest} getestet. Der Test für die Methode \texttt{void setFile()} beginnt mit dem Instanziieren eines \texttt{StringPersistor}-Objekts und \texttt{File}-Objekts. Das \texttt{File} wird über die Methode \texttt{setFile} dem \texttt{File}-Attribut des \texttt{StringPersistor} übergeben. Über die Methode \texttt{getFile()} wird in der \texttt{assertEquals(Boolean expected, Boolean actual)} geprüft, ob es sich beim Rückgabewert, um dasselbe \texttt{File} handelt, das übergeben wurde. Die Methode \\ \texttt{void save(Instant instant, LogMessage logMessage)} wird nach ähnlichem Verfahren, wie der \texttt{LogFileAdapter} getestet (siehe Kapitel Unit Testing $\rightarrow$ \texttt{LogFileAdapter}). Die Methode \texttt{List<PersistedString> get()} wurde noch nicht getestet, da sie noch nicht vollständig implementiert ist.
+
+\subsubsection{LogConverterStrategy}
+Die Implementationen von \texttt{LogConverterStrategy} (\texttt{LogSemicolonConverterStrategy}, \\ \texttt{LogSlashConverterStrategy}) werden ebenfalls anhand von JUnit-Tests getestet. Wobei jeweils getested wird, dass die \texttt{LogMessage}-Objekte korrekt konvertiert werden und andererseits, dass die Strings korrekt als \texttt{LogMessage} zurückgegeben werden.
+
+\subsection{Manual Testing}
+\subsubsection{GameOfLife}
+Für den Integrationstest der Einbindung in die GameOfLife Applikation wird geprüft, ob die Datei \glqq LogFile.txt\grqq zur Speicherung der Logs auf dem Dateisystem erstellt wurde. Dazu wird zuerst die \texttt{main} Methode des \texttt{LoggerServer} gestartet. Dann wird die GameOfLife Applikation gestartet. Weiter wird getestet, ob Log-Einträge in LogFile.txt vorhanden sind, denn der Aufruf der \texttt{init} Methode sollte bereits zu einem Log-Eintrag auf \texttt{LogLevel.INFO} mit der Nachricht \glqq Initializing UI...\grqq führen.
+
+\subsubsection{LoggerComponent \& LoggerServer}
+Der \texttt{LoggerServer} wird vorallem mit dem \texttt{DemoLogger} getestet. Dieser schickt vier LogMeldungen mit unterschiedlichen \texttt{LogLevels} an den Server. Manuell wird dann überprüft, ob die richtigen Meldungen erhalten wurden. Dieser Test dient hauptsächlich zur Überprüfung der TCP-Verbindung und dem LogMessage-Handling in der Queue. Die Teilkomponenten \texttt{StringPersistor} und \texttt{LogFileAdapter} haben ihre eigenen JUnit-Tests (siehe Kapitel Unit Testing $\rightarrow$ StringPersistor und Unit Testing $\rightarrow$ \texttt{LogFileAdapter}).
+
+\subsubsection{LoggerViewer}
+Um die Funktionalität des LoggerViewers zu testen, müssen die folgenden drei Szenarien geprüft werden. LoggerServer mit keinem Viewer, LoggerServer mit einem Viewer und LoggerServer mit zwei Viewers. Für jedes Szenario muss zuerst ein Server und ein Game gestartet werden. Danach wird die zu prüfende Anzahl Viewer gestartet. Nun müssen im Game ein paar Aktionen ausgelöst werden, welche zu Log-Einträgen führen. Danach können die Meldungen auf der Server-Konsole mit den Einträgen auf dem Viewer verglichen werden und falls es die Gleichen sind gilt der Test als bestanden.
+
+\section{Environment}
+Hier sind die Umgebungsanforderung für unseren MessageLogger aufgelistet.
+
+\begin{enumerate}
+	\item Die Logger-Komponente ist mit \textbf{Java 1.8.0} realisiert.
+	\item Es gelten die entsprechenden System-Anforderungen für Java 1.8.0.
+	\item Der Fully-Qualified Class Name der LoggerFactory, die IP Adresse und die Portnummer des Servers müssen in der Konfigurationsdatei vorliegen
+	\item Durch Austauschen des Konfigurationsfiles kann eine beliebige Logger-Komponente eines anderen Teams ins Game integriert werden.
+	\item Der Austausch der Loggerkomponente ist ohne Anpassungen im Code an das Spiels möglich.
+	\item Eine \textbf{Internetverbindung} wird benötigt, um die Nachrichten an den Server zu senden.
+\end{enumerate}
+
+\end{document}
